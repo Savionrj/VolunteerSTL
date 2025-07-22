@@ -1,4 +1,4 @@
-package com.unit_2_project.volunteer_stl.models.dtos.userDTOS;
+package com.unit_2_project.volunteer_stl.models.dtos.userDTOs;
 
 import lombok.*;
 

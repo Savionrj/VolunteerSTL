@@ -1,7 +1,11 @@
 package com.unit_2_project.volunteer_stl.controllers;
 
-import com.unit_2_project.volunteer_stl.models.dtos.userDTOS.*;
+import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.*;
 import com.unit_2_project.volunteer_stl.models.User;
+import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserRegistrationDTO;
+import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserRetrievalDTO;
+import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserUpdateLoginDTO;
+import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserUpdateProfileDTO;
 import com.unit_2_project.volunteer_stl.repositories.UserRepository;
 import lombok.*;
 import org.springframework.http.*;

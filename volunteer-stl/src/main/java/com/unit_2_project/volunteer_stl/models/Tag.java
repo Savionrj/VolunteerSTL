@@ -1,6 +1,6 @@
 package com.unit_2_project.volunteer_stl.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,12 +18,13 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String tag;
+    private String name;
 
-    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<EffortTag> effortTags;
+    @ManyToMany(mappedBy = "tags")
+    @JsonBackReference
+    private List<Effort> efforts;
 
-
-
+    public Tag(String name) {
+        this.name = name;
+    }
 }

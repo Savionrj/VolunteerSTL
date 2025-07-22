@@ -1,4 +1,4 @@
-package com.unit_2_project.volunteer_stl.models.dtos.userDTOS;
+package com.unit_2_project.volunteer_stl.models.dtos.userDTOs;
 
 import lombok.*;
 
@@ -6,12 +6,10 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRetrievalDTO {
-    private int id;
+public class UserRegistrationDTO {
     private String username;
+    private String password;
     private String firstName;
     private String lastName;
     private String email;
-    private String profilePictureUrl;
-    private String bio;
 }
