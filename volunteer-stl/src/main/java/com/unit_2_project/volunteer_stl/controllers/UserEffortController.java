@@ -57,4 +57,40 @@ public class UserEffortController {
     public List<UserEffort> getAllUserEfforts(){
         return userEffortRepository.findAll();
     }
+
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<?> updateUserEffortStatusComplete(@PathVariable int id){
+
+        Optional<UserEffort> optionalUserEffort = userEffortRepository.findById(id);
+        if (optionalUserEffort.isPresent()) {
+            UserEffort userEffort = optionalUserEffort.get();
+            userEffort.setStatus("completed");
+            userEffort.setCompletedAt(LocalDateTime.now());
+            userEffortRepository.save(userEffort);
+            return ResponseEntity.ok(userEffort);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User effort not found");
+
+        }
+    }
+
+    @PatchMapping("/{id}/canceled")
+    public ResponseEntity<?> updateUserEffortStatusCanceled(@PathVariable int id){
+
+        Optional<UserEffort> optionalUserEffort = userEffortRepository.findById(id);
+        if (optionalUserEffort.isPresent()) {
+            UserEffort userEffort = optionalUserEffort.get();
+            userEffort.setStatus("canceled");
+            userEffortRepository.save(userEffort);
+            return ResponseEntity.ok(userEffort);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User effort not found");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUserEffortById(@PathVariable int id){
+        userEffortRepository.deleteById(id);
+        return ResponseEntity.ok("User effort deleted");
+    }
 }
