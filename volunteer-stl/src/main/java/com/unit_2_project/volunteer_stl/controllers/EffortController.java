@@ -104,4 +104,14 @@ public class EffortController {
         return effort != null ? ResponseEntity.ok(effort)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Effort not found");
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEffortById(@PathVariable int id){
+        if (!effortRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Effort not found");
+        }
+
+        effortRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
