@@ -28,8 +28,8 @@ public class EffortController {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
-    @PostMapping
-    public ResponseEntity<Effort> createEffort(@RequestBody EffortCreationDTO effortData, @RequestParam int organizerId) {
+    @PostMapping("/{organizerId}")
+    public ResponseEntity<Effort> createEffort(@PathVariable int organizerId, @RequestBody EffortCreationDTO effortData) {
         try{
             User organizer = userRepository.findById(organizerId)
                     .orElseThrow(() -> new RuntimeException("Organizer not found"));
@@ -103,6 +103,28 @@ public class EffortController {
                 .orElse(null);
         return effort != null ? ResponseEntity.ok(effort)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Effort not found");
+    }
+
+    @GetMapping("/effort-cards")
+    public List<EffortCardDTO> getEffortCards(){
+        List<Effort> efforts = effortRepository.findAll();
+        List<EffortCardDTO> effortCards = new ArrayList<>();
+
+        for(Effort effort: efforts){
+            EffortCardDTO card = new EffortCardDTO();
+
+            card.setEffortId(effort.getId());
+            card.setImageUrl(effort.getImageUrl());
+            card.setEffortName(effort.getTitle());
+            card.setStartTime(effort.getStartTime());
+            card.setOrganizerName(effort.getOrganizer().getFirstName());
+
+            card.setUserId(effort.getOrganizer().getId());
+
+            effortCards.add(card);
+        }
+
+        return effortCards;
     }
 
     @DeleteMapping("/{id}")
