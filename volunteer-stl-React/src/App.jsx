@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Header from './components/Header'
+import EffortsDashboard from './components/EffortsDashboard'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
 
@@ -9,6 +11,12 @@ function App() {
   return (
     <>
     <Header />
+
+    <Router>
+      <Routes>
+        <Route path="/" element={<EffortsDashboard />} />
+      </Routes>
+    </Router>
     </>
   )
 }

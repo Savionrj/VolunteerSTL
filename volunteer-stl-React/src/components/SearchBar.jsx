@@ -1,6 +1,6 @@
 export default function SearchBar() {
   return (
-    <input className="border border-gray-300 rounded-sm p-2 w-200 h-fit">
+    <input className="border border-gray-300 rounded-sm p-1 w-200 h-fit">
 
     </input>
   );

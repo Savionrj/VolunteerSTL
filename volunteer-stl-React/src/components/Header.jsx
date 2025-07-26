@@ -8,7 +8,6 @@ export default function Header() {
 
       <h1 className='text-3xl font-bold text-[#1F1D8F]'>VOLUNTEER STL</h1>
 
-      <SearchBar />
       <NavMenu />
 
     </div>
