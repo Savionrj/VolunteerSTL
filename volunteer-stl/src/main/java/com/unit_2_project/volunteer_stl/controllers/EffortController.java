@@ -92,39 +92,73 @@ public class EffortController {
         }
     }
 
-    @GetMapping
-    public List<Effort> getAllEfforts() {
-        return effortRepository.findAll();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getEffortById(@PathVariable int id) {
         Effort effort = effortRepository.findById(id)
                 .orElse(null);
-        return effort != null ? ResponseEntity.ok(effort)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Effort not found");
+
+        if (effort != null){
+            EffortRetrievalDTO effortDTO = new EffortRetrievalDTO();
+
+            effortDTO.setEffortId(effort.getId());
+
+            effortDTO.setEffortName(effort.getTitle());
+            effortDTO.setUserId(effort.getOrganizer().getId());
+
+            effortDTO.setStartTime(effort.getStartTime());
+            effortDTO.setEndTime(effort.getEndTime());
+
+            effortDTO.setAddress(effort.getAddress());
+            effortDTO.setCity(effort.getCity());
+            effortDTO.setState(effort.getState());
+            effortDTO.setZipCode(effort.getZipCode());
+
+            effortDTO.setTags(effort.getTags());
+
+            effortDTO.setDescription(effort.getDescription());
+
+            effortDTO.setImageUrl(effort.getImageUrl());
+            effortDTO.setOrganizerName(effort.getOrganizer().getFirstName());
+
+            return ResponseEntity.ok(effortDTO);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Effort not found");
+        }
     }
 
-    @GetMapping("/effort-cards")
-    public List<EffortCardDTO> getEffortCards(){
+    @GetMapping
+    public List<EffortRetrievalDTO> getAllEfforts(){
         List<Effort> efforts = effortRepository.findAll();
-        List<EffortCardDTO> effortCards = new ArrayList<>();
+        List<EffortRetrievalDTO> effortDTOs = new ArrayList<>();
 
         for(Effort effort: efforts){
-            EffortCardDTO card = new EffortCardDTO();
+            EffortRetrievalDTO effortDTO = new EffortRetrievalDTO();
 
-            card.setEffortId(effort.getId());
-            card.setImageUrl(effort.getImageUrl());
-            card.setEffortName(effort.getTitle());
-            card.setStartTime(effort.getStartTime());
-            card.setOrganizerName(effort.getOrganizer().getFirstName());
+            effortDTO.setEffortId(effort.getId());
 
-            card.setUserId(effort.getOrganizer().getId());
+            effortDTO.setEffortName(effort.getTitle());
+            effortDTO.setUserId(effort.getOrganizer().getId());
 
-            effortCards.add(card);
+            effortDTO.setStartTime(effort.getStartTime());
+            effortDTO.setEndTime(effort.getEndTime());
+
+            effortDTO.setAddress(effort.getAddress());
+            effortDTO.setCity(effort.getCity());
+            effortDTO.setState(effort.getState());
+            effortDTO.setZipCode(effort.getZipCode());
+
+            effortDTO.setTags(effort.getTags());
+
+            effortDTO.setDescription(effort.getDescription());
+
+            effortDTO.setImageUrl(effort.getImageUrl());
+            effortDTO.setOrganizerName(effort.getOrganizer().getFirstName());
+
+            effortDTOs.add(effortDTO);
         }
 
-        return effortCards;
+        return effortDTOs;
     }
 
     @DeleteMapping("/{id}")
