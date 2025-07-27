@@ -81,8 +81,8 @@ public class EffortController {
 
             effort.setOrganizer(organizer);
 
-            Effort saved = effortRepository.save(effort);
-            return new ResponseEntity<>(saved, HttpStatus.CREATED);
+            effortRepository.save(effort);
+            return new ResponseEntity<>(HttpStatus.CREATED);
 
         }catch (Exception e) {
             e.printStackTrace();
