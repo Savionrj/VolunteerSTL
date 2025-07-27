@@ -1,12 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import EffortsDashboard from './components/EffortsDashboard'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-
-
 function App() {
-  const [count, setCount] = useState(0)
+  const [efforts, setEfforts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const fetchEfforts = async () => {
+    try{
+      const response = await fetch('http://localhost:8080/efforts');
+      if(!Response.ok){
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setEfforts(data);
+    } catch (err) {
+      console.error('Failed to fetch efforts:', err.message);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEfforts();
+  }, []);
 
   return (
     <>
@@ -14,7 +34,7 @@ function App() {
 
     <Router>
       <Routes>
-        <Route path="/" element={<EffortsDashboard />} />
+        <Route path="/" element={<EffortsDashboard efforts = {efforts} />} />
       </Routes>
     </Router>
     </>

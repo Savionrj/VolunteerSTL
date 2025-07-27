@@ -11,7 +11,6 @@ export default function EffortFilterSection() {
       </div>
       <div className="flex justify-between items-center mt-8 text-gray-500 text-md px-15">
         <select name="sort" id="sort" className="border border-gray-300 rounded-sm p-1 w-40 h-fit">
-          <option value="" selected disabled hidden>Sort</option>
           <option value="best">Best</option>
           <option value="popular">Popular</option>
           <option value="recent">Recent</option>
