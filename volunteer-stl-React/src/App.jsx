@@ -11,7 +11,7 @@ function App() {
   const fetchEfforts = async () => {
     try{
       const response = await fetch('http://localhost:8080/efforts');
-      if(!Response.ok){
+      if(!response.ok){
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();

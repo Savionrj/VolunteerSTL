@@ -6,7 +6,7 @@ export default function EffortsDashboard({efforts}){
   return (
     <div>
       < EffortFilterSection />
-      <div>
+      <div className="grid grid-cols-3 ">
         {efforts.map((effort) =>
           <EffortCard key={effort.id} effort={effort} />
         )}
