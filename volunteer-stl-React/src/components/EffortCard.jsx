@@ -6,7 +6,7 @@ export default function EffortCard({ effort }) {
   const start = new Date(effort.startTime);
 
   return (
-    <Link to={`/${effort.effortId}`} className="flex flex-col border border-gray-500 rounded-md my-10 mx-8">
+    <Link to={`/effort/${effort.effortId}`} className="flex flex-col border border-gray-500 rounded-md my-10 mx-8">
       <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="w-full h-48 object-cover rounded-t-md" />
 
       <div className="p-3">
