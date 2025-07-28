@@ -1,6 +1,11 @@
-export default function SearchBar() {
+export default function SearchBar({ search, setSearch }) {
   return (
-    <input className="border border-gray-300 rounded-sm p-1 w-200 h-fit">
+    <input
+      type="text"
+      placeholder="Search efforts..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      className="border border-gray-300 rounded-sm p-1 w-200 h-fit">
 
     </input>
   );
