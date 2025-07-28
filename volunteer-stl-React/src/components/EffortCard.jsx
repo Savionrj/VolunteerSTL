@@ -1,11 +1,12 @@
 import volunteerImage from '../images/volunteer.jpg';
+import { Link } from 'react-router-dom';
 
 export default function EffortCard({ effort }) {
 
   const start = new Date(effort.startTime);
 
   return (
-    <div className="flex flex-col border border-gray-500 rounded-md my-10 mx-8">
+    <Link to={`/${effort.effortId}`} className="flex flex-col border border-gray-500 rounded-md my-10 mx-8">
       <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="w-full h-48 object-cover rounded-t-md" />
 
       <div className="p-3">
@@ -22,6 +23,6 @@ export default function EffortCard({ effort }) {
 
         <p>Organized By {effort.organizerName}</p>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import EffortsDashboard from './components/EffortsDashboard'
+import EffortPage from './components/EffortPage'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<EffortsDashboard efforts = {efforts} />} />
+        <Route path="/effort.effortId}" element= {<EffortPage />} />
       </Routes>
     </Router>
     </>
