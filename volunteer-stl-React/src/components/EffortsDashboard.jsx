@@ -2,7 +2,7 @@ import EffortCard from "./EffortCard";
 import EffortFilterSection from "./EffortFilterSection";
 import { useState } from "react";
 
-export default function EffortsDashboard({efforts}){
+export default function EffortsDashboard({ efforts }) {
 
   const [search, setSearch] = useState('');
   const [filterOption, setFilterOption] = useState('Efforts');
@@ -11,6 +11,16 @@ export default function EffortsDashboard({efforts}){
     return (
       effort.effortName.toLowerCase().includes(search.toLowerCase()) ||
       effort.address.toLowerCase().includes(search.toLowerCase())
+      ||
+      effort.city.toLowerCase().includes(search.toLowerCase())
+      ||
+      effort.state.toLowerCase().includes(search.toLowerCase())
+      ||
+      effort.zipCode.toLowerCase().includes(search.toLowerCase())
+      ||
+      effort.description.toLowerCase().includes(search.toLowerCase()) ||
+      effort.organizerName.toLowerCase().includes(search.toLowerCase()) ||
+      effort.tags.some(tag => tag.name.toLowerCase().includes(search.toLowerCase()))
     );
   });
 
