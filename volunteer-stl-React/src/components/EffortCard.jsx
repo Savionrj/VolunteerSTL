@@ -9,7 +9,7 @@ export default function EffortCard({ effort }) {
       <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="w-full h-48 object-cover rounded-t-md" />
 
       <div className="p-3">
-        <h3 className='text-2xl'>{effort.effortName}</h3>
+        <h3 className='text-2xl py-2'>{effort.effortName}</h3>
 
         <p>{new Date(effort.startTime).toLocaleDateString('en-US', {
           month: 'short',

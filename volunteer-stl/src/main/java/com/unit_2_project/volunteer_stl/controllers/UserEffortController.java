@@ -59,6 +59,17 @@ public class UserEffortController {
         return userEffortRepository.findAll();
     }
 
+    @GetMapping("get-count-of-user-efforts-by-user/{userId}")
+    public int getCountOfUserEffortsByUser(@PathVariable int userId) {
+        return userEffortRepository.countByUserId(userId);
+    }
+
+
+    @GetMapping("get-count-of-user-efforts-by-effort/{effortId}")
+    public int getCountOfUserEffortsByEffort(@PathVariable int effortId){
+        return userEffortRepository.countByEffortId(effortId);
+    }
+
     @PatchMapping("/{id}/complete")
     public ResponseEntity<?> updateUserEffortStatusComplete(@PathVariable int id){
 
