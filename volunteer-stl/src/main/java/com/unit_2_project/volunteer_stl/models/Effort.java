@@ -52,7 +52,7 @@ public class Effort {
     private List<Tag> tags;
 
 
-    private int maxVolunteers = 314;
+    private int maxVolunteers;
     private boolean donationsNeeded;
 
     private boolean effortCompleted = false;

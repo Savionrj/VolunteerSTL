@@ -121,6 +121,8 @@ public class EffortController {
             effortDTO.setImageUrl(effort.getImageUrl());
             effortDTO.setOrganizerName(effort.getOrganizer().getFirstName());
 
+            effortDTO.setMaxVolunteers(effort.getMaxVolunteers());
+
             return ResponseEntity.ok(effortDTO);
         }
         else {
@@ -155,6 +157,8 @@ public class EffortController {
 
             effortDTO.setImageUrl(effort.getImageUrl());
             effortDTO.setOrganizerName(effort.getOrganizer().getFirstName());
+
+            effortDTO.setMaxVolunteers(effort.getMaxVolunteers());
 
             effortDTOs.add(effortDTO);
         }

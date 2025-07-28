@@ -30,4 +30,6 @@ public class EffortRetrievalDTO {
 
     private String imageUrl;
     private String organizerName;
+
+    private int maxVolunteers;
 }
