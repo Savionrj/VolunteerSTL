@@ -54,7 +54,7 @@ export default function EffortPage({ efforts }) {
 
   const handleRegister = (e) => {
     setRegister(!register);
-    //Will return after I create user registration functionality
+    //TODO - implement register functionality after user registration and sign-in functionality is created
   }
 
   return (
@@ -88,10 +88,12 @@ export default function EffortPage({ efforts }) {
           </div>
         </div>
 
-        <div>
+        <div className="p-8 text-2xl">
+          <h4>Description</h4>
+          <p>{currentEffort.description}</p>
         </div>
 
-        <div>
+        <div /*TODO - create comment section after setting up endpoints for effort comments*/>
         </div>
       </div>
     </div>

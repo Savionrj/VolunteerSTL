@@ -10,9 +10,9 @@ function App() {
   const [error, setError] = useState(null)
 
   const fetchEfforts = async () => {
-    try{
+    try {
       const response = await fetch('http://localhost:8080/efforts');
-      if(!response.ok){
+      if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
@@ -31,14 +31,13 @@ function App() {
 
   return (
     <>
-    <Header />
-
-    <Router>
-      <Routes efforts={efforts}>
-        <Route path="/" element={<EffortsDashboard efforts = {efforts} />} />
-          <Route path="/effort/:effortId" element= {<EffortPage efforts = {efforts}/>} />
-      </Routes>
-    </Router>
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/" element={<EffortsDashboard efforts={efforts} />} />
+          <Route path="/effort/:effortId" element={<EffortPage efforts={efforts} />} />
+        </Routes>
+      </Router>
     </>
   )
 }
