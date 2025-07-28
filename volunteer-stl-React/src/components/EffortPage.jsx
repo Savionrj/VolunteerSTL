@@ -1,11 +1,28 @@
 import { useParams } from "react-router-dom"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import volunteerImage from '../images/volunteer.jpg';
 
 export default function EffortPage({ efforts }) {
 
   const { effortId } = useParams();
-  const [register, setRegister] = useState(false)
+  const [register, setRegister] = useState(false);
+  const [userEffortCount, setUserEffortCount] = useState(0);
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/user-efforts/get-count-of-user-efforts-by-effort/${effortId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setUserEffortCount(data);
+      } catch (err) {
+        console.error('Failed to fetch effort volunteer count:', err.message);
+      }
+    };
+    fetchCount();
+  }, []);
 
   const currentEffort = efforts.find(
     (effort) => effort.effortId.toString() === effortId
@@ -67,7 +84,7 @@ export default function EffortPage({ efforts }) {
             </p>
             <p>Tags: {currentEffort.tags.map(tag => tag.name).join(', ')}
             </p>
-            <p>Volunteer Count: {currentEffort.maxVolunteerCount} </p>
+            <p>Volunteer Count: {userEffortCount} / {currentEffort.maxVolunteers} </p>
           </div>
         </div>
 
