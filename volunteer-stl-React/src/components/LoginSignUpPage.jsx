@@ -12,18 +12,40 @@ export default function LoginSignUpPage({ setUser }) {
     email: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-
-    if (loginPage) {
-
-    }
 
   }
 
-  const handleChange = () => {
+  const handleRegistration = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:8080/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        console.log("Registration successful!");
+      } else if (response.status === 409) {
+        console.error("Username already taken.");
+      } else {
+        console.error("Registration failed.");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+    }
+  }
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
-      ...prev
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -34,11 +56,12 @@ export default function LoginSignUpPage({ setUser }) {
       {loginPage ?
         (
           <>
-            <form className='flex flex-col' onSubmit={handleSubmit}>
+            <form className='flex flex-col' onSubmit={handleLogin}>
               <label className='flex flex-col py-4'>
                 Username:
                 <input
                   type="text"
+                  name="username"
                   value={formData.username}
                   onChange={handleChange}
                   required
@@ -49,6 +72,7 @@ export default function LoginSignUpPage({ setUser }) {
                 Password:
                 <input
                   type="text"
+                  name="password"
                   value={formData.password}
                   onChange={handleChange}
                   required
@@ -62,11 +86,12 @@ export default function LoginSignUpPage({ setUser }) {
           </>) :
         (
           <>
-            <form className='grid grid-cols-2' onSubmit={handleSubmit}>
+            <form className='grid grid-cols-2' onSubmit={handleRegistration}>
               <label className='flex flex-col py-4'>
                 Username:
                 <input
                   type="text"
+                  name="username"
                   value={formData.username}
                   onChange={handleChange}
                   required
@@ -77,6 +102,7 @@ export default function LoginSignUpPage({ setUser }) {
                 Password:
                 <input
                   type="text"
+                  name="password"
                   value={formData.password}
                   onChange={handleChange}
                   required
@@ -87,6 +113,7 @@ export default function LoginSignUpPage({ setUser }) {
                 First Name:
                 <input
                   type="text"
+                  name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
                   required
@@ -97,6 +124,7 @@ export default function LoginSignUpPage({ setUser }) {
                 Last Name:
                 <input
                   type="text"
+                  name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
                   required
@@ -107,6 +135,7 @@ export default function LoginSignUpPage({ setUser }) {
                 Email:
                 <input
                   type="text"
+                  name="email"
                   value={formData.email}
                   onChange={handleChange}
                   required
