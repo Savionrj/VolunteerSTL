@@ -12,8 +12,32 @@ export default function LoginSignUpPage({ setUser }) {
     email: ''
   });
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:8080/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        const userDTO = await response.json();
+        setUser(userDTO);
+        console.log(userDTO);
+      } else if (response.status === 401) {
+        console.error("Invalid password.");
+      } else if (response.status === 404) {
+        console.error("User not found.");
+      } else{
+        console.error("Login failed");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+    }
 
   }
 
