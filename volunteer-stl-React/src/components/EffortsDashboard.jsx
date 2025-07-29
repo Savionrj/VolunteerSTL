@@ -2,7 +2,7 @@ import EffortCard from "./EffortCard";
 import EffortFilterSection from "./EffortFilterSection";
 import { useState } from "react";
 
-export default function EffortsDashboard({ efforts }) {
+export default function EffortsDashboard({ efforts, user }) {
 
   const [search, setSearch] = useState('');
   const [filterOption, setFilterOption] = useState('Efforts');

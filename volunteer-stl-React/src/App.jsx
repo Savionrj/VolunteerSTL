@@ -37,10 +37,10 @@ function App() {
         <LoginSignUpPage setUser={setUser} /> :
         (
           <Router>
-            <Header />
+            <Header user={user} />
             <Routes>
-              <Route path="/" element={<EffortsDashboard efforts={efforts} />} />
-              <Route path="/effort/:effortId" element={<EffortPage efforts={efforts} />} />
+              <Route path="/" element={<EffortsDashboard efforts={efforts} user={user} />} />
+              <Route path="/effort/:effortId" element={<EffortPage efforts={efforts} user={user} />} />
             </Routes>
           </Router>
         )}

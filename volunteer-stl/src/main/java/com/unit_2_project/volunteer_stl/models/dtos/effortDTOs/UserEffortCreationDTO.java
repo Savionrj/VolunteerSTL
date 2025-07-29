@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEffortDTO {
+public class UserEffortCreationDTO {
     private int userId;
     private int effortId;
 }

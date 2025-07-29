@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom"
 import { useState, useEffect } from "react";
 import volunteerImage from '../images/volunteer.jpg';
 
-export default function EffortPage({ efforts }) {
+export default function EffortPage({ efforts, user }) {
 
   const { effortId } = useParams();
   const [register, setRegister] = useState(false);
@@ -52,9 +52,42 @@ export default function EffortPage({ efforts }) {
     return formattedTime;
   }
 
-  const handleRegister = (e) => {
+  const userEffort = {
+    userId: user.id,
+    effortId: currentEffort.effortId
+  }; 
+
+  const handleRegister = async (e) => {
     setRegister(!register);
-    //TODO - implement register functionality after user registration and sign-in functionality is created
+
+    if (!register) {
+
+      console.log("Registering for effort:", userEffort);
+      try {
+        const response = await fetch('http://localhost:8080/user-efforts/register-for-effort', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userEffort)
+
+        });
+
+        if (response.ok) {
+          const userEffortDTO = await response.json();
+        }
+        else if (response.status === 404) {
+          console.error("User already registered for this effort.");
+        }
+        else if (response.status === 409) {
+          console.error("User already registered for this effort.");
+        } else {
+          console.error("Registration failed");
+        }
+      } catch (error) {
+        console.error("Error during effort registration:", error);
+      }
+    }
   }
 
   return (
