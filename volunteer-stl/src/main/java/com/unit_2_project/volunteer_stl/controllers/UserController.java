@@ -37,7 +37,17 @@ public class UserController {
 
         userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        UserRetrievalDTO userRetrievalData = new UserRetrievalDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getProfilePictureUrl(),
+                user.getBio()
+        );
+
+        return ResponseEntity.ok(userRetrievalData);
     }
 
     @GetMapping("/{id}")

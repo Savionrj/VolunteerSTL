@@ -30,7 +30,9 @@ export default function LoginSignUpPage({ setUser }) {
       });
 
       if (response.ok) {
-        console.log("Registration successful!");
+        const userDTO = await response.json();
+        setUser(userDTO);
+        console.log(userDTO);
       } else if (response.status === 409) {
         console.error("Username already taken.");
       } else {
