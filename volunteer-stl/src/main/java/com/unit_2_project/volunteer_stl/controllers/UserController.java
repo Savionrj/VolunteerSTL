@@ -1,10 +1,9 @@
 package com.unit_2_project.volunteer_stl.controllers;
 
-import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.*;
 import com.unit_2_project.volunteer_stl.models.User;
 import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserRegistrationDTO;
 import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserRetrievalDTO;
-import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserUpdateLoginDTO;
+import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserLoginDTO;
 import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserUpdateProfileDTO;
 import com.unit_2_project.volunteer_stl.repositories.UserRepository;
 import lombok.*;
@@ -12,6 +11,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -48,6 +49,36 @@ public class UserController {
         );
 
         return ResponseEntity.ok(userRetrievalData);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> getUserByUsernameAndPassword(@RequestBody UserLoginDTO userLoginDTO){
+
+        Optional<User> optionalUser = userRepository.findByUsername(userLoginDTO.getUsername());
+
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+
+            if(!Objects.equals(user.getPassword(), userLoginDTO.getPassword())){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
+            }
+            else{
+                UserRetrievalDTO userRetrievalData = new UserRetrievalDTO(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.getProfilePictureUrl(),
+                        user.getBio()
+                );
+
+                return ResponseEntity.ok(userRetrievalData);
+            }
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
     }
 
     @GetMapping("/{id}")
@@ -109,7 +140,7 @@ public class UserController {
     }
 
     @PatchMapping("/loginUpdate/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody UserUpdateLoginDTO userUpdateData) {
+    public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody UserLoginDTO userUpdateData) {
         return userRepository.findById(id).map(user -> {
             if (userUpdateData.getUsername() != null) {
                 user.setUsername(userUpdateData.getUsername());
