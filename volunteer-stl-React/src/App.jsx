@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import EffortsDashboard from './components/EffortsDashboard'
 import EffortPage from './components/EffortPage'
+import LoginSignUpPage from './components/LoginSignUpPage'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
-  const [efforts, setEfforts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [efforts, setEfforts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
 
   const fetchEfforts = async () => {
     try {
@@ -31,6 +33,7 @@ function App() {
 
   return (
     <>
+      { !user ? <LoginSignUpPage setUser = {setUser} /> : (
       <Router>
         <Header />
         <Routes>
@@ -38,6 +41,7 @@ function App() {
           <Route path="/effort/:effortId" element={<EffortPage efforts={efforts} />} />
         </Routes>
       </Router>
+      )}
     </>
   )
 }
