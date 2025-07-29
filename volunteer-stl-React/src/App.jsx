@@ -33,15 +33,17 @@ function App() {
 
   return (
     <>
-      { !user ? <LoginSignUpPage setUser = {setUser} /> : (
-      <Router>
-        <Header />
-        <Routes>
-          <Route path="/" element={<EffortsDashboard efforts={efforts} />} />
-          <Route path="/effort/:effortId" element={<EffortPage efforts={efforts} />} />
-        </Routes>
-      </Router>
-      )}
+      {!user ?
+        <LoginSignUpPage setUser={setUser} /> :
+        (
+          <Router>
+            <Header />
+            <Routes>
+              <Route path="/" element={<EffortsDashboard efforts={efforts} />} />
+              <Route path="/effort/:effortId" element={<EffortPage efforts={efforts} />} />
+            </Routes>
+          </Router>
+        )}
     </>
   )
 }
