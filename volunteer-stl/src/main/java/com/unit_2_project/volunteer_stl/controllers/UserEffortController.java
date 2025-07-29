@@ -68,10 +68,24 @@ public class UserEffortController {
         return userEffortRepository.findAll();
     }
 
-    @GetMapping("get-count-of-user-efforts-by-user/{userId}")
+    @GetMapping("/get-count-of-user-efforts-by-user/{userId}")
     public int getCountOfUserEffortsByUser(@PathVariable int userId) {
         return userEffortRepository.countByUserId(userId);
     }
+
+    @GetMapping("/get-user-effort-by-user-and-effort")
+    public boolean getUserEffortByUserAndEffort(@RequestBody UserEffortCreationDTO userEffortData)
+    {
+        Optional<UserEffort> optionalUserEffort = userEffortRepository
+                .findByUserIdAndEffortId(userEffortData.getUserId(), userEffortData.getEffortId());
+
+        if(optionalUserEffort.isPresent()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 
     @GetMapping("get-count-of-user-efforts-by-effort/{effortId}")
