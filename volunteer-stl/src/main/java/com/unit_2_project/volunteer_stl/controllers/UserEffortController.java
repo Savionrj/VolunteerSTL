@@ -89,22 +89,44 @@ public class UserEffortController {
     }
 
     @GetMapping("/my-efforts/{userId}")
-    public List<UserEffortRetrievalDTO> MyEfforts(@PathVariable int userId){
-        List<UserEffort> myEfforts = userEffortRepository.findAllByUserId(userId);
-        List<UserEffortRetrievalDTO> myEffortDTOs = new ArrayList<>();
+    public List<EffortRetrievalDTO> MyEfforts(@PathVariable int userId){
+        List<UserEffort> myUserEfforts = userEffortRepository.findAllByUserId(userId);
+        List<EffortRetrievalDTO> myEfforts = new ArrayList<>();
 
-        for(UserEffort myEffort : myEfforts){
-            UserEffortRetrievalDTO userEffortRetrievalDTO = new UserEffortRetrievalDTO();
+        for(UserEffort myUserEffort : myUserEfforts){
+            int effortId = myUserEffort.getEffort().getId();
+            Optional<Effort> optionalMyEffort = effortRepository.findById(effortId);
 
-            userEffortRetrievalDTO.setId(myEffort.getId());
-            userEffortRetrievalDTO.setStatus(myEffort.getStatus());
-            userEffortRetrievalDTO.setRegisteredAt(myEffort.getRegisteredAt());
-            userEffortRetrievalDTO.setUserId(myEffort.getUser().getId());
-            userEffortRetrievalDTO.setEffortId(myEffort.getEffort().getId());
-            
-            myEffortDTOs.add(userEffortRetrievalDTO);
+            if(optionalMyEffort.isPresent()){
+                EffortRetrievalDTO myEffort = new EffortRetrievalDTO();
+
+
+                myEffort.setEffortId(optionalMyEffort.get().getId());
+                myEffort.setEffortName(optionalMyEffort.get().getTitle());
+                myEffort.setUserId(userId);
+
+                myEffort.setStartTime(optionalMyEffort.get().getStartTime());
+                myEffort.setEndTime(optionalMyEffort.get().getEndTime());
+
+                myEffort.setAddress(optionalMyEffort.get().getAddress());
+                myEffort.setCity(optionalMyEffort.get().getCity());
+                myEffort.setState(optionalMyEffort.get().getState());
+                myEffort.setZipCode(optionalMyEffort.get().getZipCode());
+
+                myEffort.setTags(optionalMyEffort.get().getTags());
+                
+                myEffort.setDescription(optionalMyEffort.get().getDescription());
+                myEffort.setImageUrl(optionalMyEffort.get().getImageUrl());
+                myEffort.setOrganizerName(optionalMyEffort.get().getOrganizer().getFirstName());
+
+                myEffort.setMaxVolunteers(optionalMyEffort.get().getMaxVolunteers());
+
+
+                myEfforts.add(myEffort);
+            }
         }
-        return myEffortDTOs;
+
+        return myEfforts;
     }
 
     @PatchMapping("/{id}/complete")
