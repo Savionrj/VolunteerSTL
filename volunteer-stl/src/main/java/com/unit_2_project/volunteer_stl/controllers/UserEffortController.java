@@ -74,16 +74,12 @@ public class UserEffortController {
     }
 
     @GetMapping("/get-user-effort-by-user-and-effort")
-    public boolean getUserEffortByUserAndEffort(@RequestBody UserEffortCreationDTO userEffortData)
+    public boolean getUserEffortByUserAndEffort(@RequestParam int userId, @RequestParam int effortId)
     {
         Optional<UserEffort> optionalUserEffort = userEffortRepository
-                .findByUserIdAndEffortId(userEffortData.getUserId(), userEffortData.getEffortId());
+                .findByUserIdAndEffortId(userId, effortId);
 
-        if(optionalUserEffort.isPresent()) {
-            return true;
-        } else {
-            return false;
-        }
+        return optionalUserEffort.isPresent();
     }
 
 

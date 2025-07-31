@@ -8,22 +8,6 @@ export default function EffortPage({ efforts, user }) {
   const [register, setRegister] = useState(false);
   const [userEffortCount, setUserEffortCount] = useState(0);
 
-  useEffect(() => {
-    const fetchCount = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/user-efforts/get-count-of-user-efforts-by-effort/${effortId}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setUserEffortCount(data);
-      } catch (err) {
-        console.error('Failed to fetch effort volunteer count:', err.message);
-      }
-    };
-    fetchCount();
-  }, []);
-
   const currentEffort = efforts.find(
     (effort) => effort.effortId.toString() === effortId
   );
@@ -32,33 +16,12 @@ export default function EffortPage({ efforts, user }) {
     return <div>Effort not found.</div>;
   }
 
-
-  const formatDate = (effortDateTime) => {
-    const formattedDate = new Date(effortDateTime).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-
-    return formattedDate
-  }
-
-  const formatTime = (effortDateTime) => {
-    const formattedTime = new Date(effortDateTime).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit'
-    })
-
-    return formattedTime;
-  }
-
   const userEffort = {
     userId: user.id,
     effortId: currentEffort.effortId
-  }; 
+  };
 
   const handleRegister = async (e) => {
-    setRegister(!register);
 
     if (!register) {
 
@@ -88,6 +51,65 @@ export default function EffortPage({ efforts, user }) {
         console.error("Error during effort registration:", error);
       }
     }
+  }
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/user-efforts/get-count-of-user-efforts-by-effort/${effortId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setUserEffortCount(data);
+      } catch (err) {
+        console.error('Failed to fetch effort volunteer count:', err.message);
+      }
+    };
+
+    fetchCount();
+  }, [effortId, handleRegister()]);
+
+  useEffect(() => {
+    const setRegisterState = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/user-efforts/get-user-effort-by-user-and-effort?userId=${user.id}&effortId=${currentEffort.effortId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data) {
+          setRegister(true);
+        }
+        else {
+          setRegister(false);
+        };
+      } catch (err) {
+        console.error('Failed to set registration state:', err.message);
+      }
+    };
+
+    setRegisterState();
+  }, [user.id, currentEffort.effortId]);
+
+
+  const formatDate = (effortDateTime) => {
+    const formattedDate = new Date(effortDateTime).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    })
+
+    return formattedDate
+  }
+
+  const formatTime = (effortDateTime) => {
+    const formattedTime = new Date(effortDateTime).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit'
+    })
+
+    return formattedTime;
   }
 
   return (
