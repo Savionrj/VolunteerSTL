@@ -38,7 +38,7 @@ export default function EffortsDashboard({ allEfforts, user }) {
       < EffortFilterSection setFilterOption={setFilterOption} search={search} setSearch={setSearch} />
 
       <div className="grid grid-cols-3 ">
-        {filterOption === "Efforts" && (filteredEfforts?.length > 0 ? (
+        {filterOption === "Efforts" && (filteredEfforts.length > 0 ? (
           filteredEfforts.map((effort) => (
             <EffortCard key={effort.id} effort={effort} />
           ))
@@ -46,9 +46,13 @@ export default function EffortsDashboard({ allEfforts, user }) {
           <p className="col-span-3 text-center text-gray-500 pt-15">No efforts to show.</p>
         ))}
 
-        {filterOption === 'My Efforts' && (
-          <h4>My Efforts</h4>
-        )}
+        {filterOption === "My Efforts" && (filteredEfforts.length > 0 ? (
+          filteredEfforts.map((effort) => (
+            <EffortCard key={effort.id} effort={effort} />
+          ))
+        ) : (
+          <p className="col-span-3 text-center text-gray-500 pt-15">You have no efforts to show.</p>
+        ))}
 
       </div>
     </div>

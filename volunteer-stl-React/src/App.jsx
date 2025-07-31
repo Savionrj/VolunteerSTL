@@ -6,7 +6,7 @@ import LoginSignUpPage from './components/LoginSignUpPage'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
-  const [efforts, setEfforts] = useState([]);
+  const [allEfforts, setEfforts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -52,8 +52,8 @@ function App() {
           <Router>
             <Header user={user} />
             <Routes>
-              <Route path="/" element={<EffortsDashboard efforts={efforts} user={user} />} />
-              <Route path="/effort/:effortId" element={<EffortPage efforts={efforts} user={user} />} />
+              <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} />} />
+              <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
             </Routes>
           </Router>
         )}
