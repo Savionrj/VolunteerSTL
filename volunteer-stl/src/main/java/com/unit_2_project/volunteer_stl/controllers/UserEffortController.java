@@ -13,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,17 +82,29 @@ public class UserEffortController {
 
         return optionalUserEffort.isPresent();
     }
-
-
-
+    
     @GetMapping("get-count-of-user-efforts-by-effort/{effortId}")
     public int getCountOfUserEffortsByEffort(@PathVariable int effortId){
         return userEffortRepository.countByEffortId(effortId);
     }
 
     @GetMapping("/my-efforts/{userId}")
-    public List<UserEffort> MyEfforts(@PathVariable int userId){
-        return userEffortRepository.findAllByUserId(userId);
+    public List<UserEffortRetrievalDTO> MyEfforts(@PathVariable int userId){
+        List<UserEffort> myEfforts = userEffortRepository.findAllByUserId(userId);
+        List<UserEffortRetrievalDTO> myEffortDTOs = new ArrayList<>();
+
+        for(UserEffort myEffort : myEfforts){
+            UserEffortRetrievalDTO userEffortRetrievalDTO = new UserEffortRetrievalDTO();
+
+            userEffortRetrievalDTO.setId(myEffort.getId());
+            userEffortRetrievalDTO.setStatus(myEffort.getStatus());
+            userEffortRetrievalDTO.setRegisteredAt(myEffort.getRegisteredAt());
+            userEffortRetrievalDTO.setUserId(myEffort.getUser().getId());
+            userEffortRetrievalDTO.setEffortId(myEffort.getEffort().getId());
+            
+            myEffortDTOs.add(userEffortRetrievalDTO);
+        }
+        return myEffortDTOs;
     }
 
     @PatchMapping("/{id}/complete")
