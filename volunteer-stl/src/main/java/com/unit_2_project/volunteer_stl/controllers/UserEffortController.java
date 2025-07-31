@@ -89,6 +89,11 @@ public class UserEffortController {
         return userEffortRepository.countByEffortId(effortId);
     }
 
+    @GetMapping("/my-efforts/{userId}")
+    public List<UserEffort> MyEfforts(@PathVariable int userId){
+        return userEffortRepository.findAllByUserId(userId);
+    }
+
     @PatchMapping("/{id}/complete")
     public ResponseEntity<?> updateUserEffortStatusComplete(@PathVariable int id){
 
