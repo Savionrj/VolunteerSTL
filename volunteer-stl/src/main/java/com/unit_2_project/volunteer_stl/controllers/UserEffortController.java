@@ -119,9 +119,19 @@ public class UserEffortController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUserEffortById(@PathVariable int id){
-        userEffortRepository.deleteById(id);
-        return ResponseEntity.ok("User effort deleted");
+    @DeleteMapping("/unregister")
+    public ResponseEntity<?> deleteUserEffortById(@RequestParam int userId, @RequestParam int effortId) {
+
+        Optional<UserEffort> optionalUserEffort = userEffortRepository.findByUserIdAndEffortId(userId, effortId);
+        UserEffort userEffort;
+
+        if (optionalUserEffort.isPresent()) {
+            userEffort = optionalUserEffort.get();
+            userEffortRepository.delete(userEffort);
+            return ResponseEntity.ok("User effort deleted");
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Effort does not exist");
+        }
     }
 }
