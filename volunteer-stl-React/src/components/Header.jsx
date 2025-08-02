@@ -3,7 +3,7 @@ import SearchBar from './SearchBar';
 import { Link } from 'react-router-dom';
 
 
-export default function Header({user}) {
+export default function Header() {
   return (
     <div className='flex justify-between items-center bg-white p-3 shadow-md h-24'>
 

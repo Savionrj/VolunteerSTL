@@ -55,7 +55,7 @@ function App() {
             <Routes>
               <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} />} />
               <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
-              <Route path="/account" element={<AccountPage />} />
+              <Route path="/account" element={<AccountPage user={user} />} />
             </Routes>
           </Router>
         )}

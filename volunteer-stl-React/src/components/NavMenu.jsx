@@ -13,7 +13,7 @@ export default function NavMenu() {
         <li className='p-4 text-3xl'><FaPlus /></li>
         <li className='p-4 text-3xl'><IoIosSettings /></li>
         <li className='p-4 text-3xl'><LuMessageCircleMore /></li>
-        <Link to="/account" className='p-4 text-3xl'><FaRegUserCircle /></Link>
+      <Link to='/account' className='p-4 text-3xl'><FaRegUserCircle /></Link>
       </ul>
   )
 }

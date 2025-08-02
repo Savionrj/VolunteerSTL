@@ -74,6 +74,21 @@ public class UserEffortController {
         return userEffortRepository.countByUserId(userId);
     }
 
+    @GetMapping("/count-completed-efforts")
+    public int getCountCompletedEffortsByUser(@RequestParam int userId){
+        userEffortRepository.findAllByUserId(userId);
+
+        return userEffortRepository.countByStatus("completed");
+    }
+
+    @GetMapping("/count-organized-efforts")
+    public int getCountOrganizedEffortsByUser(@RequestParam int userId){
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User organizer = optionalUser.get();
+        return effortRepository.countByOrganizer(organizer);
+    }
+
     @GetMapping("/get-user-effort-by-user-and-effort")
     public boolean getUserEffortByUserAndEffort(@RequestParam int userId, @RequestParam int effortId)
     {
@@ -114,7 +129,7 @@ public class UserEffortController {
                 myEffort.setZipCode(optionalMyEffort.get().getZipCode());
 
                 myEffort.setTags(optionalMyEffort.get().getTags());
-                
+
                 myEffort.setDescription(optionalMyEffort.get().getDescription());
                 myEffort.setImageUrl(optionalMyEffort.get().getImageUrl());
                 myEffort.setOrganizerName(optionalMyEffort.get().getOrganizer().getFirstName());

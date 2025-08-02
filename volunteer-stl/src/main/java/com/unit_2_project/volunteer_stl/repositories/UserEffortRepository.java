@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface UserEffortRepository extends JpaRepository<UserEffort, Integer> {
     int countByUserId(int userId);
     int countByEffortId(int effortId);
+    int countByStatus(String status);
 
     boolean existsByUserIdAndEffortId(int userId, int effortId);
 
