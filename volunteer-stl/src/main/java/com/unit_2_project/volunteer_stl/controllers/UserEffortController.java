@@ -81,6 +81,46 @@ public class UserEffortController {
         return userEffortRepository.countByStatus("completed");
     }
 
+    @GetMapping("/get-organized-efforts")
+    public List<EffortRetrievalDTO> getCompletedEffortsByUser(@RequestParam int userId){
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User organizer = optionalUser.get();
+
+        List<Effort> efforts = effortRepository.findAllByOrganizer(organizer);
+        List<EffortRetrievalDTO> effortDTOs = new ArrayList<>();
+
+        for(Effort effort: efforts){
+            EffortRetrievalDTO effortDTO = new EffortRetrievalDTO();
+
+            effortDTO.setEffortId(effort.getId());
+
+            effortDTO.setEffortName(effort.getTitle());
+            effortDTO.setUserId(effort.getOrganizer().getId());
+
+            effortDTO.setStartTime(effort.getStartTime());
+            effortDTO.setEndTime(effort.getEndTime());
+
+            effortDTO.setAddress(effort.getAddress());
+            effortDTO.setCity(effort.getCity());
+            effortDTO.setState(effort.getState());
+            effortDTO.setZipCode(effort.getZipCode());
+
+            effortDTO.setTags(effort.getTags());
+
+            effortDTO.setDescription(effort.getDescription());
+
+            effortDTO.setImageUrl(effort.getImageUrl());
+            effortDTO.setOrganizerName(effort.getOrganizer().getFirstName());
+
+            effortDTO.setMaxVolunteers(effort.getMaxVolunteers());
+
+            effortDTOs.add(effortDTO);
+        }
+
+        return effortDTOs;
+    }
+
     @GetMapping("/count-organized-efforts")
     public int getCountOrganizedEffortsByUser(@RequestParam int userId){
 

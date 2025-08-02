@@ -24,5 +24,6 @@ export default function EffortCard({ effort }) {
         <p>Organized By {effort.organizerName}</p>
       </div>
     </Link>
+
   );
 }

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import { useState, useEffect } from "react";
 import volunteerImage from '../images/volunteer.jpg';
 
@@ -124,7 +124,7 @@ export default function EffortPage({ efforts, user }) {
           <h3>
             <span className="text-3xl">{currentEffort.effortName}</span>
             <br />
-            <span className="text-2xl">By {currentEffort.organizerName}</span>
+            <Link to={`/account/${currentEffort.userId}`}><span className="text-2xl">By {currentEffort.organizerName}</span></Link>
           </h3>
           <button type="button" className="border border-gray-300 rounded-md p-2 text-2xl" onClick={(e) => handleRegister(e)} disabled={userEffortCount >= currentEffort.maxVolunteers && !registered}>
             {registered ? "Unregister" : "Register"}

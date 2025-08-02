@@ -24,6 +24,26 @@ function App() {
     }
   }, [user]);
 
+  useEffect(() => {
+    const refreshUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/users/${user.id}`)
+        if (response.ok) {
+          const userDTO = await response.json();
+          setUser(userDTO);
+        } else if (response.status === 401) {
+          console.error("Invalid password.");
+        } else if (response.status === 404) {
+          console.error("User not found.");
+        } else {
+          console.error("Login failed");
+        }
+      } catch (error) {
+        console.error("Error during registration:", error);
+      }
+    }
+    refreshUser();
+  }, [])
 
   const fetchEfforts = async () => {
     try {
@@ -55,7 +75,7 @@ function App() {
             <Routes>
               <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} />} />
               <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
-              <Route path="/account" element={<AccountPage user={user} />} />
+              <Route path="/account/:userId" element={<AccountPage user={user} />} />
             </Routes>
           </Router>
         )}

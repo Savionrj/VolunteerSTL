@@ -14,6 +14,5 @@ public interface UserEffortRepository extends JpaRepository<UserEffort, Integer>
     boolean existsByUserIdAndEffortId(int userId, int effortId);
 
     List<UserEffort> findAllByUserId(int userId);
-
     Optional<UserEffort> findByUserIdAndEffortId(int userId, int effortId);
 }

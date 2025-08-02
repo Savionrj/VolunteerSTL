@@ -27,7 +27,6 @@ export default function LoginSignUpPage({ setUser }) {
       if (response.ok) {
         const userDTO = await response.json();
         setUser(userDTO);
-        console.log(userDTO);
       } else if (response.status === 401) {
         console.error("Invalid password.");
       } else if (response.status === 404) {
