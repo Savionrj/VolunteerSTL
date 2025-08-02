@@ -3,6 +3,7 @@ import Header from './components/Header'
 import EffortsDashboard from './components/EffortsDashboard'
 import EffortPage from './components/EffortPage'
 import LoginSignUpPage from './components/LoginSignUpPage'
+import AccountPage from './components/AccountPage'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
             <Routes>
               <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} />} />
               <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
+              <Route path="/account" element={<AccountPage />} />
             </Routes>
           </Router>
         )}

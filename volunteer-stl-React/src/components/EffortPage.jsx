@@ -5,7 +5,7 @@ import volunteerImage from '../images/volunteer.jpg';
 export default function EffortPage({ efforts, user }) {
 
   const { effortId } = useParams();
-  const [registered, setRegistered] = useState(false);
+  const [registered, setRegistered] = useState();
   const [userEffortCount, setUserEffortCount] = useState(0);
 
   const currentEffort = efforts.find(
