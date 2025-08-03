@@ -129,6 +129,34 @@ public class ConnectionController {
         }
     }
 
+    @GetMapping("/already-connected")
+    public String checkAlreadyConnected(@RequestParam int currUserId, @RequestParam int viewedUserId){
+
+        Optional<User> sender = userRepository.findById(currUserId);
+        Optional<User> receiver = userRepository.findById(viewedUserId);
+
+        if(sender.isPresent() && receiver.isPresent()){
+            User a = sender.get();
+            User b = receiver.get();
+            Optional<Connection> previousRequest = connectionRepository.findByCurrentUserAndConnectedUser(a,b);
+            Optional<Connection> previousRequestReverse = connectionRepository.findByCurrentUserAndConnectedUser(b,a);
+
+            if(previousRequest.isPresent()){
+                Connection connection = previousRequest.get();
+
+                return connection.getStatus();
+
+            }else if(previousRequestReverse.isPresent()){
+                Connection connection = previousRequestReverse.get();
+
+                return connection.getStatus();
+            }
+
+            return "Connection Doesn't Exist";
+        }
+        return "A User Doesn't Exist";
+    }
+
     @PatchMapping("/connection-response")
     public ResponseEntity<ConnectionDTO> respondToConnection(@RequestParam String response, @RequestParam int connectionId){
 
