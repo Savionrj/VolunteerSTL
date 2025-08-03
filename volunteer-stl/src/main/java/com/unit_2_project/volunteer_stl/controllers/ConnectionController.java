@@ -76,7 +76,31 @@ public class ConnectionController {
         else{
             return null;
         }
+
+
     }
 
+    @PatchMapping("/connection-response")
+    public ResponseEntity<ConnectionDTO> respondToConnection(@RequestParam String response, @RequestParam int connectionId){
 
+        Optional<Connection> optionalConnection = connectionRepository.findById(connectionId);
+
+        if(optionalConnection.isPresent()){
+            Connection connection = optionalConnection.get();
+
+            connection.setStatus(response);
+            connectionRepository.save(connection);
+            ConnectionDTO connectionDTO = new ConnectionDTO();
+            connectionDTO.setConnectionId(connection.getId());
+            connectionDTO.setSenderUserId(connection.getCurrentUser().getId());
+            connectionDTO.setReceiverUserId(connection.getConnectedUser().getId());
+            connectionDTO.setStatus(connection.getStatus());
+            connectionDTO.setCreatedAt(connection.getCreatedAt());
+
+            return ResponseEntity.ok(connectionDTO);
+        }else{
+            return null;
+        }
+
+    }
 }
