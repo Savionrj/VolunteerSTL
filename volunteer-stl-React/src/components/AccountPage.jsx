@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, use } from 'react';
 import { useParams } from 'react-router-dom';
 import volunteerImage from '../images/volunteer.jpg';
 import { FaPlus } from "react-icons/fa";
@@ -8,7 +8,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 export default function AccountPage({ user }) {
 
   const { userId } = useParams();
-
+  const [connectionStatus, setConnectionStatus] = useState();
   const [currUser, setCurrUser] = useState();
 
   useEffect(() => {
@@ -26,7 +26,6 @@ export default function AccountPage({ user }) {
     }
     getUser();
   }, [userId])
-
 
   const [completedCount, setCompletedCount] = useState();
   const [organizedCount, setOrganizedCount] = useState();
@@ -97,6 +96,35 @@ export default function AccountPage({ user }) {
     scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
   };
 
+  const checkExistingConnection = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/connections/already-connected?currUserId=${user.id}&viewedUserId=${userId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.text();
+      setConnectionStatus(data);
+    } catch (err) {
+      console.error('Failed to fetch connection status:', err.message);
+    }
+  }
+
+  useEffect(() => {
+    checkExistingConnection();
+  }, [userId]);
+
+  const handleConnectionSent = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/connections?senderId=${user.id}&receiverId=${userId}`, { method: 'POST' });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      await checkExistingConnection();
+    } catch (err) {
+      console.error('Failed to create connection request:', err.message);
+    }
+  }
+
   return (
     <>
 
@@ -112,11 +140,17 @@ export default function AccountPage({ user }) {
             <h2 className="text-2xl font-semibold">{currUser.firstName}</h2>
             <p className="text-gray-600">@{currUser.username}</p>
 
-            {!viewingSelf ? (<><button className="mt-4 p-2 border rounded-md hover:bg-gray-100 flex items-center gap-2 text-sm">
-              <FaPlus /> Follow
-            </button>
+            {!viewingSelf ? (<>
 
-              <h3 className="mt-8 font-semibold text-lg">Message Me</h3></>) : (<></>)}
+              {connectionStatus == "Connection Doesn't Exist" ? (<button onClick={handleConnectionSent} className="mt-4 p-2 border rounded-md hover:bg-gray-100 flex items-center gap-2 text-sm">
+                <FaPlus /> Follow
+              </button>) : (<></>)}
+
+              {connectionStatus == "accepted" && <h3 className="mt-8 font-semibold text-lg">Message Me</h3>}
+
+              {connectionStatus == "pending" && <h3 className='mt-8 font-semibold text-sm'>pending response...</h3>}
+
+            </>) : (<></>)}
 
 
             <div className='mt-8 text-sm'>
