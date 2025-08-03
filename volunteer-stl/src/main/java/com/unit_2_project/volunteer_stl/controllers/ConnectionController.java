@@ -3,6 +3,7 @@ package com.unit_2_project.volunteer_stl.controllers;
 import com.unit_2_project.volunteer_stl.models.Connection;
 import com.unit_2_project.volunteer_stl.models.User;
 import com.unit_2_project.volunteer_stl.models.dtos.featureDTOs.ConnectionDTO;
+import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserRetrievalDTO;
 import com.unit_2_project.volunteer_stl.repositories.ConnectionRepository;
 import com.unit_2_project.volunteer_stl.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -86,6 +87,43 @@ public class ConnectionController {
             return null;
         }
     }
+
+    @GetMapping("/accepted")
+    public ResponseEntity<List<UserRetrievalDTO>> getAcceptedConnections(@RequestParam int userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        User user = optionalUser.get();
+
+        List<Connection> connections = connectionRepository.findAllByStatus("ACCEPTED");
+        List<UserRetrievalDTO> result = new ArrayList<>();
+
+        for (Connection connection : connections) {
+            User connectedUser = null;
+
+            if (connection.getCurrentUser().getId() == user.getId()) {
+                connectedUser = connection.getConnectedUser();
+            } else if (connection.getConnectedUser().getId() == user.getId()) {
+                connectedUser = connection.getCurrentUser();
+            }
+
+            if (connectedUser != null) {
+                UserRetrievalDTO dto = new UserRetrievalDTO();
+                dto.setId(connectedUser.getId());
+                dto.setFirstName(connectedUser.getFirstName());
+                dto.setLastName(connectedUser.getLastName());
+                dto.setProfilePictureUrl(connectedUser.getProfilePictureUrl());
+
+                result.add(dto);
+            }
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
 
     @GetMapping("/by-receiver-pending")
     public List<ConnectionDTO> getAllConnectionsByReceiverIdPending(@RequestParam int receiverId){

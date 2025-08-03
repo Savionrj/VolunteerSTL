@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ConnectionRepository extends JpaRepository<Connection,Integer> {
     List<Connection> findAllByConnectedUser(User connectedUser);
     Optional<Connection> findByCurrentUserAndConnectedUser(User currentUser, User connectedUser);
+
+    List<Connection> findAllByStatus(String status);
 }
