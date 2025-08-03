@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import volunteerImage from '../images/volunteer.jpg';
 import { FaPlus } from "react-icons/fa";
 import EffortCard from './EffortCard';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 export default function AccountPage({ user }) {
 
@@ -86,65 +87,85 @@ export default function AccountPage({ user }) {
     }
   }, [currUser, user]);
 
-  if (!currUser) return <p>Loading user profile...</p>;
+  const scrollRef = useRef(null);
+
+  const scrollLeft = () => {
+    scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+  };
+
+  const scrollRight = () => {
+    scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+  };
 
   return (
     <>
-      {viewingSelf ? (
-        <div className='flex w-full justify-between p-6 items-center'>
-          <div className='flex flex-col border border-gray-500 rounded-md p-10 h-full'>
-            <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="h-58 w-58 object-cover rounded-full" />
-            <div className='flex justify-between items-center my-8'>
-              <h5><span className='text-2xl'>{currUser.firstName}</span><br />@{currUser.username}</h5>
-            </div>
-            <div className='my-8'>
-              {completedCount ? (<p>Efforts Completed: <span className='font-bold'>{completedCount}</span></p>) : (<p>No Completed Efforts</p>)}
-              {organizedCount ? (<p>Efforts Organized <span className='font-bold'>{organizedCount}</span></p>) : (<p>No Organized Efforts</p>)}
 
+      {!currUser ? (
+        <div className="p-8">
+          <p className="text-xl text-gray-600">Loading user profile...</p>
+        </div>
+      ) : (
+        <div className='flex w-full justify-between px-10 py-8 gap-10'>
+
+          <div className='min-w-[280px] max-w-[300px] w-full border border-gray-300 rounded-md p-6 flex flex-col items-center'>
+            <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="h-40 w-40 object-cover rounded-full mb-4" />
+            <h2 className="text-2xl font-semibold">{currUser.firstName}</h2>
+            <p className="text-gray-600">@{currUser.username}</p>
+
+            {!viewingSelf ? (<><button className="mt-4 p-2 border rounded-md hover:bg-gray-100 flex items-center gap-2 text-sm">
+              <FaPlus /> Follow
+            </button>
+
+              <h3 className="mt-8 font-semibold text-lg">Message Me</h3></>) : (<></>)}
+
+
+            <div className='mt-8 text-sm'>
+              {completedCount ? (<p>Efforts Completed: <span className='font-bold'>{completedCount}</span></p>) : (<p>No Completed Efforts</p>)}
+
+              {organizedCount ? (<p>Efforts Organized <span className='font-bold'>{organizedCount}</span></p>) : (<p>No Organized Efforts</p>)}
             </div>
           </div>
-          <div className='text-3xl'>
-            <h4>Bio</h4>
-            <p className='mb-6 text-xl'>{currUser.bio}</p>
-            <h4>Efforts I Created</h4>
-            {organizedEfforts ? (<div className='grid grid-cols-2'>
-              {
-                organizedEfforts.map((effort) => (
-                  <EffortCard key={effort.id} effort={effort} />
-                ))}
-            </div>) :
-              (<p className='text-xl'>You haven't created any efforts</p>)}
+
+
+          <div className='flex-1 overflow-hidden'>
+            <section className="mb-8">
+              <h3 className="text-3xl font-bold mb-2">Bio</h3>
+              <p className="text-gray-700 leading-relaxed text-lg">{currUser.bio || "No bio provided."}</p>
+            </section>
+
+            <section>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-3xl font-bold">Efforts {currUser.firstName} Created</h3>
+                {organizedEfforts?.length > 3 && (
+                  <div className="flex gap-2">
+                    <button onClick={scrollLeft} className="p-2 rounded-full hover:bg-gray-200">
+                      <FaChevronLeft />
+                    </button>
+                    <button onClick={scrollRight} className="p-2 rounded-full hover:bg-gray-200">
+                      <FaChevronRight />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {organizedEfforts?.length > 0 ? (
+                <div
+                  ref={scrollRef}
+                  className="flex overflow-x-auto space-x-4 scrollbar-hide pb-4"
+                >
+                  {organizedEfforts.map((effort) => (
+                    <div key={effort.id} className="min-w-[300px] flex-shrink-0">
+                      <EffortCard effort={effort} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xl text-gray-500">You haven't created any efforts.</p>
+              )}
+            </section>
           </div>
         </div>
-      ) :
-
-        (<div className='flex w-full justify-between p-6 items-center'>
-          <div className='flex flex-col border border-gray-500 rounded-md p-10 h-full'>
-            <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="h-58 w-58 object-cover rounded-full" />
-            <div className='flex justify-between items-center my-8'>
-              <h5><span className='text-2xl'>{currUser.firstName}</span><br />@{currUser.username}</h5>
-              <FaPlus />
-            </div>
-            <h6 className='font-bold'>Message Me</h6>
-            <div className='my-8'>
-              {completedCount ? (<p>Efforts Completed: <span className='font-bold'>{completedCount}</span></p>) : (<p>No Completed Efforts</p>)}
-              {organizedCount ? (<p>Efforts Organized <span className='font-bold'>{organizedCount}</span></p>) : (<p>No Organized Efforts</p>)}
-
-            </div>
-          </div>
-          <div className='text-3xl'>
-            <h4>Bio</h4>
-            <p className='mb-6 text-xl'>{currUser.bio}</p>
-            <h4>Efforts {currUser.firstName} Created</h4>
-            {organizedEfforts ? (<div className='grid grid-cols-2'>
-              {
-                organizedEfforts.map((effort) => (
-                  <EffortCard key={effort.id} effort={effort} />
-                ))}
-            </div>) :
-              (<p className='text-xl'>You haven't created any efforts</p>)}
-          </div>
-        </div>)}
+      )}
     </>
   )
 }
