@@ -71,111 +71,117 @@ export default function AddEffort({ user, fetchEfforts }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col'>
-      <div className='flex p-8 justify-between'>
-        <div className='flex flex-col w-1/4'>
-          <label className='flex flex-col'>
-            Title:
+    <form onSubmit={handleSubmit} className='max-w-5xl mx-auto px-6 py-8'>
+
+      <div className='flex flex-col gap-4'>
+        <label className='flex flex-col text-lg font-medium'>
+          Title:
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            className="border rounded px-3 py-2"
+            required
+          />
+        </label>
+
+        <label className='flex flex-col text-lg font-medium'>
+          Date:
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+            className="border rounded px-3 py-2"
+            required
+          />
+        </label>
+
+
+        <div className='flex gap-4'>
+          <label className='flex flex-col text-lg font-medium flex-1'>
+            Start Time:
             <input
-              type="text"
-              name="title"
-              value={formData.title}
+              type="time"
+              name="startTime"
+              className="border rounded px-3 py-2"
+              value={formData.startTime}
               onChange={handleChange}
-              required
             />
           </label>
-
-          <label className='flex flex-col'>
-            Date:
+          <label className='flex flex-col text-lg font-medium flex-1'>
+            End Time:
             <input
-              type="date"
-              name="date"
-              value={formData.date}
+              type="time"
+              name="endTime"
+              className="border rounded px-3 py-2"
+              value={formData.endTime}
               onChange={handleChange}
-              required
-            />
-          </label>
-
-
-          <div className='flex'>
-            <label className='flex flex-col'>
-              Start Time:
-              <input
-                type="time"
-                name="startTime"
-                className="time-input"
-                value={formData.startTime}
-                onChange={handleChange}
-              />
-            </label>
-            <label className='flex flex-col'>
-              End Time:
-              <input
-                type="time"
-                name="endTime"
-                className="time-input"
-                value={formData.endTime}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-          <label>
-            Location:
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="e.g., 123 Main St, City, State 12345"
             />
           </label>
         </div>
 
-        <div className='flex flex-col w-1/4'>
-          <label className='flex flex-col'>
-            Description:
-            <textarea
-              name="description"
-              rows="2"
-              value={formData.description}
-              onChange={handleChange}
-            />
+        <label className='flex flex-col text-lg font-medium'>
+          Location:
+          <input
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            placeholder="e.g., 123 Main St, City, State 12345"
+            className="border rounded px-3 py-2"
+          />
+        </label>
+      </div>
+
+      <div className='flex flex-col gap-4'>
+        <label className='flex flex-col text-lg font-medium'>
+          Description:
+          <textarea
+            name="description"
+            rows="2"
+            value={formData.description}
+            onChange={handleChange}
+            className="border rounded px-3 py-2"
+          />
+        </label>
+        <label className='flex flex-col text-lg font-medium'>
+          Tags:
+          <input
+            type="text"
+            name="tags"
+            value={formData.tags}
+            onChange={handleChange}
+            className="border rounded px-3 py-2"
+          />
+        </label>
+        <div className='flex justify-around'>
+          <label className='flex flex-col text-lg font-medium'>
+            Image:
+            <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="h-24 w-32 object-cover bg-gray-100 border rounded" />
           </label>
-          <label className='flex flex-col'>
-            Tags:
-            <input
-              type="text"
-              name="tags"
-              value={formData.tags}
-              onChange={handleChange}
-            />
-          </label>
-          <div>
-            <label>
-              Image:
-              <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="h-20 w-30 object-cover" />
+          <div className='flex flex-col'>
+            <label className='flex flex-col text-lg font-medium flex-1'>Max Volunteers
+              <input
+                type="number"
+                name="maxVolunteers"
+                value={formData.maxVolunteers}
+                onChange={handleChange}
+              />
             </label>
-            <div className='flex flex-col'>
-              <label className='flex flex-col'>Max Volunteers
-                <input
-                  type="number"
-                  name="maxVolunteers"
-                  value={formData.maxVolunteers}
-                  onChange={handleChange}
-                />
-              </label>
-              <label className='flex flex-col'>Donations Needed?
-                <input
-                  type="checkbox"
-                  name="donationsNeeded"
-                  checked={formData.donationsNeeded}
-                  onChange={handleChange}
-                />
-              </label>
-            </div>
           </div>
-        </div></div>
-      <button type="submit" >Submit Effort</button>
+        </div>
+      </div>
+
+      <div className="mt-8 text-center">
+        <button
+          type="submit"
+          className=" px-6 py-3 rounded shadow"
+        >
+          Add Effort
+        </button>
+      </div>
     </form>
   )
 }
