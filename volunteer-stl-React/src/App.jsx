@@ -77,7 +77,7 @@ function App() {
               <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} />} />
               <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
               <Route path="/account/:userId" element={<AccountPage user={user} />} />
-              <Route path="/add-effort" element={<AddEffort user={user} />} />
+              <Route path="/add-effort" element={<AddEffort user={user} fetchEfforts={fetchEfforts} />} />
             </Routes>
           </Router>
         )}
