@@ -60,13 +60,23 @@ public class ConnectionController {
             List<ConnectionDTO> connectionDTOS = new ArrayList<>();
 
             for(Connection connection: connections){
+                if (!"ACCEPTED".equalsIgnoreCase(connection.getStatus())) continue;
                 ConnectionDTO connectionDTO = new ConnectionDTO();
 
                 connectionDTO.setConnectionId(connection.getId());
-                connectionDTO.setReceiverUserId(connection.getConnectedUser().getId());
-                connectionDTO.setSenderUserId(connection.getCurrentUser().getId());
+
                 connectionDTO.setStatus(connection.getStatus());
                 connectionDTO.setCreatedAt(connection.getCreatedAt());
+
+                connectionDTO.setSenderUserId(connection.getCurrentUser().getId());
+                connectionDTO.setSenderFirstName(connection.getCurrentUser().getFirstName());
+                connectionDTO.setSenderLastName(connection.getCurrentUser().getLastName());
+                connectionDTO.setSenderProfilePicURL(connection.getCurrentUser().getProfilePictureUrl());
+
+                connectionDTO.setReceiverUserId(connection.getConnectedUser().getId());
+                connectionDTO.setReceiverFirstName(connection.getConnectedUser().getFirstName());
+                connectionDTO.setReceiverLastName(connection.getConnectedUser().getLastName());
+                connectionDTO.setReceiverProfilePicURL(connection.getConnectedUser().getProfilePictureUrl());
 
                 connectionDTOS.add(connectionDTO);
             }
@@ -76,8 +86,47 @@ public class ConnectionController {
         else{
             return null;
         }
+    }
+
+    @GetMapping("/by-receiver-pending")
+    public List<ConnectionDTO> getAllConnectionsByReceiverIdPending(@RequestParam int receiverId){
+
+        Optional<User> optionalReceiver = userRepository.findById(receiverId);
 
 
+        if(optionalReceiver.isPresent()){
+            User receiver = optionalReceiver.get();
+
+            List<Connection> connections = connectionRepository.findAllByConnectedUser(receiver);
+            List<ConnectionDTO> connectionDTOS = new ArrayList<>();
+
+            for(Connection connection: connections){
+                if (!"PENDING".equalsIgnoreCase(connection.getStatus())) continue;
+                ConnectionDTO connectionDTO = new ConnectionDTO();
+
+                connectionDTO.setConnectionId(connection.getId());
+
+                connectionDTO.setStatus(connection.getStatus());
+                connectionDTO.setCreatedAt(connection.getCreatedAt());
+
+                connectionDTO.setSenderUserId(connection.getCurrentUser().getId());
+                connectionDTO.setSenderFirstName(connection.getCurrentUser().getFirstName());
+                connectionDTO.setSenderLastName(connection.getCurrentUser().getLastName());
+                connectionDTO.setSenderProfilePicURL(connection.getCurrentUser().getProfilePictureUrl());
+
+                connectionDTO.setReceiverUserId(connection.getConnectedUser().getId());
+                connectionDTO.setReceiverFirstName(connection.getConnectedUser().getFirstName());
+                connectionDTO.setReceiverLastName(connection.getConnectedUser().getLastName());
+                connectionDTO.setReceiverProfilePicURL(connection.getConnectedUser().getProfilePictureUrl());
+
+                connectionDTOS.add(connectionDTO);
+            }
+
+            return connectionDTOS;
+        }
+        else{
+            return null;
+        }
     }
 
     @PatchMapping("/connection-response")
