@@ -10,18 +10,22 @@ export default function AccountPage({ user }) {
 
   const [currUser, setCurrUser] = useState();
 
-  const getUser = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/users/${userId}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/users/${userId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setCurrUser(data);
+      } catch (err) {
+        console.error('Failed to fetch user:', err.message);
       }
-      const data = await response.json();
-      setCurrUser(data);
-    } catch (err) {
-      console.error('Failed to fetch user:', err.message);
     }
-  }
+    getUser();
+  }, [userId])
+
 
   const [completedCount, setCompletedCount] = useState();
   const [organizedCount, setOrganizedCount] = useState();
@@ -29,7 +33,7 @@ export default function AccountPage({ user }) {
 
   const getCompletedCount = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/user-efforts/count-completed-efforts?userId=${user.id}`);
+      const response = await fetch(`http://localhost:8080/user-efforts/count-completed-efforts?userId=${currUser.id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -42,7 +46,7 @@ export default function AccountPage({ user }) {
 
   const getOrganizedCount = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/user-efforts/count-organized-efforts?userId=${user.id}`);
+      const response = await fetch(`http://localhost:8080/user-efforts/count-organized-efforts?userId=${currUser.id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -55,7 +59,7 @@ export default function AccountPage({ user }) {
 
   const getOrganizedEfforts = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/user-efforts/get-organized-efforts?userId=${user.id}`);
+      const response = await fetch(`http://localhost:8080/user-efforts/get-organized-efforts?userId=${currUser.id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -67,11 +71,12 @@ export default function AccountPage({ user }) {
   };
 
   useEffect(() => {
-    getCompletedCount();
-    getOrganizedCount();
-    getOrganizedEfforts();
-    getUser();
-  }, []);
+    if (currUser) {
+      getCompletedCount();
+      getOrganizedCount();
+      getOrganizedEfforts();
+    }
+  }, [currUser]);
 
   const [viewingSelf, setViewingSelf] = useState();
 
@@ -81,7 +86,7 @@ export default function AccountPage({ user }) {
     }
   }, [currUser, user]);
 
-
+  if (!currUser) return <p>Loading user profile...</p>;
 
   return (
     <>
@@ -90,7 +95,34 @@ export default function AccountPage({ user }) {
           <div className='flex flex-col border border-gray-500 rounded-md p-10 h-full'>
             <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="h-58 w-58 object-cover rounded-full" />
             <div className='flex justify-between items-center my-8'>
-              <h5><span className='text-2xl'>{user.firstName}</span><br />@{user.username}</h5>
+              <h5><span className='text-2xl'>{currUser.firstName}</span><br />@{currUser.username}</h5>
+            </div>
+            <div className='my-8'>
+              {completedCount ? (<p>Efforts Completed: <span className='font-bold'>{completedCount}</span></p>) : (<p>No Completed Efforts</p>)}
+              {organizedCount ? (<p>Efforts Organized <span className='font-bold'>{organizedCount}</span></p>) : (<p>No Organized Efforts</p>)}
+
+            </div>
+          </div>
+          <div className='text-3xl'>
+            <h4>Bio</h4>
+            <p className='mb-6 text-xl'>{currUser.bio}</p>
+            <h4>Efforts I Created</h4>
+            {organizedEfforts ? (<div className='grid grid-cols-2'>
+              {
+                organizedEfforts.map((effort) => (
+                  <EffortCard key={effort.id} effort={effort} />
+                ))}
+            </div>) :
+              (<p className='text-xl'>You haven't created any efforts</p>)}
+          </div>
+        </div>
+      ) :
+
+        (<div className='flex w-full justify-between p-6 items-center'>
+          <div className='flex flex-col border border-gray-500 rounded-md p-10 h-full'>
+            <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="h-58 w-58 object-cover rounded-full" />
+            <div className='flex justify-between items-center my-8'>
+              <h5><span className='text-2xl'>{currUser.firstName}</span><br />@{currUser.username}</h5>
               <FaPlus />
             </div>
             <h6 className='font-bold'>Message Me</h6>
@@ -102,8 +134,8 @@ export default function AccountPage({ user }) {
           </div>
           <div className='text-3xl'>
             <h4>Bio</h4>
-            <p className='mb-6 text-xl'>{user.bio}</p>
-            <h4>Efforts I Created</h4>
+            <p className='mb-6 text-xl'>{currUser.bio}</p>
+            <h4>Efforts {currUser.firstName} Created</h4>
             {organizedEfforts ? (<div className='grid grid-cols-2'>
               {
                 organizedEfforts.map((effort) => (
@@ -112,8 +144,7 @@ export default function AccountPage({ user }) {
             </div>) :
               (<p className='text-xl'>You haven't created any efforts</p>)}
           </div>
-        </div>
-      ) : (<p>test</p>)}
+        </div>)}
     </>
   )
 }

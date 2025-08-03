@@ -7,7 +7,8 @@ export default function EffortsDashboard({ allEfforts, user }) {
 
   const [search, setSearch] = useState('');
   const [filterOption, setFilterOption] = useState('Efforts');
-  const [myEfforts, setMyEfforts] = useState([])
+  const [myEfforts, setMyEfforts] = useState([]);
+  const [sortType, setSortType] = useState([]);
 
   useEffect(() => {
     const myEffortsCall = async () => {
@@ -35,7 +36,7 @@ export default function EffortsDashboard({ allEfforts, user }) {
 
   return (
     <div>
-      < EffortFilterSection setFilterOption={setFilterOption} search={search} setSearch={setSearch} />
+      < EffortFilterSection setFilterOption={setFilterOption} search={search} setSearch={setSearch} setSortType={setSortType} />
 
       <div className="grid grid-cols-3 ">
         {filterOption === "Efforts" && (filteredEfforts.length > 0 ? (

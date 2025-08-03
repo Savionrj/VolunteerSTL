@@ -1,6 +1,6 @@
 import SearchBar from "./SearchBar";
 
-export default function EffortFilterSection({ setFilterOption, search, setSearch }) {
+export default function EffortFilterSection({ setFilterOption, search, setSearch, setSortType }) {
 
 
   return (
@@ -12,7 +12,7 @@ export default function EffortFilterSection({ setFilterOption, search, setSearch
         < SearchBar search={search} setSearch={setSearch} />
       </div>
       <div className="flex justify-between items-center mt-8 text-gray-500 text-md px-15">
-        <select name="sort" id="sort" className="border border-gray-300 rounded-sm p-1 w-40 h-fit">
+        <select onChange={(e) => setSortType(e.target.value)} name="sort" id="sort" className="border border-gray-300 rounded-sm p-1 w-40 h-fit">
           <option value="best">Best</option>
           <option value="popular">Popular</option>
           <option value="recent">Recent</option>

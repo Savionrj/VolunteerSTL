@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header'
 import EffortsDashboard from './components/EffortsDashboard'
 import EffortPage from './components/EffortPage'
 import LoginSignUpPage from './components/LoginSignUpPage'
 import AccountPage from './components/AccountPage'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AddEffort from './components/AddEffort'
 
 function App() {
   const [allEfforts, setEfforts] = useState([]);
@@ -76,6 +77,7 @@ function App() {
               <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} />} />
               <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
               <Route path="/account/:userId" element={<AccountPage user={user} />} />
+              <Route path="/add-effort" element={<AddEffort user={user} />} />
             </Routes>
           </Router>
         )}
