@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, use } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import volunteerImage from '../images/volunteer.jpg';
 import { FaPlus } from "react-icons/fa";
 import EffortCard from './EffortCard';
@@ -10,6 +10,7 @@ export default function AccountPage({ user }) {
   const { userId } = useParams();
   const [connectionStatus, setConnectionStatus] = useState();
   const [currUser, setCurrUser] = useState();
+  const nav = useNavigate();
 
   useEffect(() => {
     const getUser = async () => {
@@ -146,7 +147,7 @@ export default function AccountPage({ user }) {
                 <FaPlus /> Follow
               </button>) : (<></>)}
 
-              {connectionStatus == "accepted" && <h3 className="mt-8 font-semibold text-lg">Message Me</h3>}
+              {connectionStatus == "accepted" && <button onClick={() => nav(`/message`, { state: { receiver: currUser } })} className="mt-8 font-semibold text-lg">Message Me</button>}
 
               {connectionStatus == "pending" && <h3 className='mt-8 font-semibold text-sm'>pending response...</h3>}
 

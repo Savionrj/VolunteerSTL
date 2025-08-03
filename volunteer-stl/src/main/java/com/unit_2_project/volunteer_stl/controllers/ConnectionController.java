@@ -2,7 +2,7 @@ package com.unit_2_project.volunteer_stl.controllers;
 
 import com.unit_2_project.volunteer_stl.models.Connection;
 import com.unit_2_project.volunteer_stl.models.User;
-import com.unit_2_project.volunteer_stl.models.dtos.connectionDTOs.ConnectionDTO;
+import com.unit_2_project.volunteer_stl.models.dtos.featureDTOs.ConnectionDTO;
 import com.unit_2_project.volunteer_stl.repositories.ConnectionRepository;
 import com.unit_2_project.volunteer_stl.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

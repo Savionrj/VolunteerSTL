@@ -8,6 +8,7 @@ import AccountPage from './components/AccountPage'
 import AddEffort from './components/AddEffort'
 import Settings from './components/Settings';
 import Notifications from './components/Notifications';
+import Messages from './components/Messages';
 
 function App() {
   const [allEfforts, setEfforts] = useState([]);
@@ -104,6 +105,7 @@ function App() {
               <Route path="/add-effort" element={<AddEffort user={user} fetchEfforts={fetchEfforts} />} />
               <Route path="/settings" element={<Settings user={user} setUser={setUser} />} />
               <Route path="/notifications" element={<Notifications user={user} pendingConnections={pendingConnections} getPendingConnections={getPendingConnections} />} />
+              <Route path="/message" element={<Messages user={user} />} />
             </Routes></>)}
       </Router>
     </>
