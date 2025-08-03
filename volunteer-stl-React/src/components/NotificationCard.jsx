@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 
-export default function NotificationCard({ connectionRequest }) {
+export default function NotificationCard({ connectionRequest, onRespond }) {
 
 
   const acceptConnection = async () => {
@@ -11,6 +11,7 @@ export default function NotificationCard({ connectionRequest }) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      onRespond();
     } catch (err) {
       console.error('Failed to respond to connection:', err.message);
     }
@@ -25,6 +26,7 @@ export default function NotificationCard({ connectionRequest }) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      onRespond();
     } catch (err) {
       console.error('Failed to respond to connection:', err.message);
     }

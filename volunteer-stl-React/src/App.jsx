@@ -11,7 +11,7 @@ import Notifications from './components/Notifications';
 
 function App() {
   const [allEfforts, setEfforts] = useState([]);
-  const [pendingConnections, setConnections] = useState([]);
+  const [pendingConnections, setPendingConnections] = useState([]);
   const [hasNotifications, setHasNotifications] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -70,20 +70,21 @@ function App() {
     fetchEfforts();
   }, []);
 
-  useEffect(() => {
-    const getPendingConnections = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/connections/by-receiver-pending?receiverId=${user.id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setConnections(data);
-      } catch (err) {
-        console.error('Failed to fetch pending connections:', err.message);
-        setError(err.message);
+  const getPendingConnections = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/connections/by-receiver-pending?receiverId=${user.id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const data = await response.json();
+      setPendingConnections(data);
+    } catch (err) {
+      console.error('Failed to fetch pending connections:', err.message);
+      setError(err.message);
     }
+  }
+
+  useEffect(() => {
     getPendingConnections();
   }, [user]);
 
@@ -102,7 +103,7 @@ function App() {
               <Route path="/account/:userId" element={<AccountPage user={user} />} />
               <Route path="/add-effort" element={<AddEffort user={user} fetchEfforts={fetchEfforts} />} />
               <Route path="/settings" element={<Settings user={user} setUser={setUser} />} />
-              <Route path="/notifications" element={<Notifications user={user} pendingConnections={pendingConnections} />} />
+              <Route path="/notifications" element={<Notifications user={user} pendingConnections={pendingConnections} getPendingConnections={getPendingConnections} />} />
             </Routes></>)}
       </Router>
     </>
