@@ -154,7 +154,7 @@ export default function AccountPage({ user }) {
                   className="flex overflow-x-auto space-x-4 scrollbar-hide pb-4"
                 >
                   {organizedEfforts.map((effort) => (
-                    <div key={effort.id} className="min-w-[300px] flex-shrink-0">
+                    <div key={effort.id || effort.effortId} className="min-w-[300px] flex-shrink-0">
                       <EffortCard effort={effort} />
                     </div>
                   ))}

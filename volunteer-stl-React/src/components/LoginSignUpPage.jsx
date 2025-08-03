@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginSignUpPage({ setUser }) {
 
   const [loginPage, switchPage] = useState(true)
+
+  const nav = useNavigate();
 
   const [formData, setFormData] = useState({
     username: '',
@@ -27,11 +30,12 @@ export default function LoginSignUpPage({ setUser }) {
       if (response.ok) {
         const userDTO = await response.json();
         setUser(userDTO);
+        nav('/');
       } else if (response.status === 401) {
         console.error("Invalid password.");
       } else if (response.status === 404) {
         console.error("User not found.");
-      } else{
+      } else {
         console.error("Login failed");
       }
     } catch (error) {
@@ -55,7 +59,7 @@ export default function LoginSignUpPage({ setUser }) {
       if (response.ok) {
         const userDTO = await response.json();
         setUser(userDTO);
-        console.log(userDTO);
+        nav('/');
       } else if (response.status === 409) {
         console.error("Username already taken.");
       } else {

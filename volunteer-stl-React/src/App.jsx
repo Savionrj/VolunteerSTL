@@ -6,6 +6,7 @@ import EffortPage from './components/EffortPage'
 import LoginSignUpPage from './components/LoginSignUpPage'
 import AccountPage from './components/AccountPage'
 import AddEffort from './components/AddEffort'
+import Settings from './components/Settings';
 
 function App() {
   const [allEfforts, setEfforts] = useState([]);
@@ -68,19 +69,17 @@ function App() {
 
   return (
     <>
-      {!user ?
-        <LoginSignUpPage setUser={setUser} /> :
-        (
-          <Router>
-            <Header user={user} />
+      <Router>
+        {!user ?
+          (<LoginSignUpPage setUser={setUser} />) : (<><Header user={user} />
             <Routes>
               <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} />} />
               <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
               <Route path="/account/:userId" element={<AccountPage user={user} />} />
               <Route path="/add-effort" element={<AddEffort user={user} fetchEfforts={fetchEfforts} />} />
-            </Routes>
-          </Router>
-        )}
+              <Route path="/settings" element={<Settings user={user} setUser={setUser} />} />
+            </Routes></>)}
+      </Router>
     </>
   )
 }

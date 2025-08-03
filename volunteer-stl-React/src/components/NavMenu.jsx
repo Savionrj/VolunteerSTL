@@ -11,7 +11,7 @@ export default function NavMenu({ user }) {
   return (
     <ul className='flex'>
       <Link to='add-effort' className='p-4 text-3xl'><FaPlus /></Link>
-      <li className='p-4 text-3xl'><IoIosSettings /></li>
+      <Link to='settings' className='p-4 text-3xl'><IoIosSettings /></Link>
       <li className='p-4 text-3xl'><LuMessageCircleMore /></li>
       <Link to={`/account/${user.id}`} className='p-4 text-3xl'><FaRegUserCircle /></Link>
     </ul>

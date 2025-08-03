@@ -49,7 +49,7 @@ export default function EffortsDashboard({ allEfforts, user }) {
 
         {filterOption === "My Efforts" && (filteredEfforts.length > 0 ? (
           filteredEfforts.map((effort) => (
-            <EffortCard key={effort.id} effort={effort} />
+            <EffortCard key={effort.id || effort.effortId} effort={effort} />
           ))
         ) : (
           <p className="col-span-3 text-center text-gray-500 pt-15">You have no efforts to show.</p>
