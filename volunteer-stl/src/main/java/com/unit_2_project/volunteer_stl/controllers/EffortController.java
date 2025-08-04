@@ -93,7 +93,9 @@ public class EffortController {
             ObjectMapper mapper = new ObjectMapper();
             List<String> tagList = mapper.readValue(tagsJson, new TypeReference<List<String>>() {});
             List<Tag> tags = tagList.stream()
-                    .map(name -> tagRepository.findByNameIgnoreCase(name.trim())
+                    .map(String::trim)
+                    .filter(name -> !name.isEmpty())
+                            .map(name -> tagRepository.findByNameIgnoreCase(name.trim())
                             .orElseGet(() -> tagRepository.save(new Tag(name.trim()))))
                     .toList();
 

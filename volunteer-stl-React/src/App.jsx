@@ -33,7 +33,9 @@ function App() {
     }
   }, [user]);
 
+
   useEffect(() => {
+    if (!user) return;
     const refreshUser = async () => {
       try {
         const response = await fetch(`http://localhost:8080/users/${user.id}`)
@@ -48,7 +50,7 @@ function App() {
           console.error("Login failed");
         }
       } catch (error) {
-        console.error("Error during registration:", error);
+        console.error("Error signing user in:", error);
       }
     }
     refreshUser();
@@ -75,6 +77,7 @@ function App() {
   }, []);
 
   const getPendingConnections = async () => {
+    if (!user) return;
     try {
       const response = await fetch(`http://localhost:8080/connections/by-receiver-pending?receiverId=${user.id}`);
       if (!response.ok) {
@@ -97,6 +100,7 @@ function App() {
   }, [pendingConnections]);
 
   useEffect(() => {
+    if (!user) return;
     const fetchConversations = async () => {
       try {
         const res = await fetch(`http://localhost:8080/messages/conversations?userId=${user.id}`);

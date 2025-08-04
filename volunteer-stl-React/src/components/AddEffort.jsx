@@ -82,8 +82,6 @@ export default function AddEffort({ user, fetchEfforts }) {
 
       if (!response.ok) {
         console.error("Failed to create effort:", await response.text());
-      } else {
-        console.log("Effort created successfully");
       }
 
     } catch (error) {

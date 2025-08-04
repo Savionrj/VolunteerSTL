@@ -184,8 +184,12 @@ export default function EffortPage({ efforts, user }) {
               <br />
               {currentEffort.city}, {currentEffort.state} {currentEffort.zipCode}
             </p>
-            <p>Tags: {currentEffort.tags.map(tag => tag.name).join(', ')}
-            </p>
+
+            {
+              Array.isArray(currentEffort.tags) && currentEffort.tags.length > 0 && (
+                <p>Tags: {currentEffort.tags.map(tag => tag.name).join(', ')}</p>
+              )}
+
             <p>Volunteer Count: {userEffortCount} / {currentEffort.maxVolunteers} </p>
           </div>
         </div>
