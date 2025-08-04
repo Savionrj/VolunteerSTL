@@ -105,9 +105,10 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
                   <div key={conn.id} className="w-[100vw]">
 
                     <Link to={`account/${conn.id}`} className="flex items-center gap-4 px-12">
-                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-bold text-lg uppercase">
-                        {conn.firstName[0]}
-                      </div>
+
+                      <img className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-bold text-lg uppercase" src={`http://localhost:8080${conn.profilePictureUrl}`} />
+
+
                       <h2 className="text-2xl font-semibold text-gray-800">
                         {conn.firstName} {conn.lastName}
                       </h2>
@@ -126,7 +127,7 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-500 italic px-2 ml-12">No efforts from this user.</p>
+                      <p className="text-gray-500 italic px-2 ml-12 mb-20">No efforts from this user.</p>
                     )}
                   </div>
                 ))
@@ -175,9 +176,8 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
                       onClick={() => setSidebarOpen(false)}
                       className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition"
                     >
-                      <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-lg uppercase">
-                        {conv.firstName[0]}
-                      </div>
+                      <img src={`http://localhost:8080${conv.profilePictureUrl}`} className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center" />
+
                       <span className="text-gray-800 font-medium">
                         {conv.firstName} {conv.lastName}
                       </span>

@@ -106,6 +106,8 @@ public class EffortController {
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
                 effort.setImageUrl("/uploads/images/" + fileName);
+            }else {
+                effort.setImageUrl("/images/stLouis-default.jpg");
             }
 
             effort.setMaxVolunteers(maxVolunteers);

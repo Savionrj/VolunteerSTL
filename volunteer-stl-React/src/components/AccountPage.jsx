@@ -12,6 +12,9 @@ export default function AccountPage({ user }) {
   const [currUser, setCurrUser] = useState();
   const nav = useNavigate();
 
+  const [editMode, setEditMode] = useState(false);
+  const [editedProfile, setEditedProfile] = useState({});
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -137,7 +140,7 @@ export default function AccountPage({ user }) {
         <div className='flex w-full justify-between px-10 py-8 gap-10'>
 
           <div className='min-w-[280px] max-w-[300px] w-full border border-gray-300 rounded-md p-6 flex flex-col items-center'>
-            <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="h-40 w-40 object-cover rounded-full mb-4" />
+            <img src={`http://localhost:8080${currUser.profilePictureUrl}`} className="h-40 w-40 object-cover rounded-full mb-4" />
             <h2 className="text-2xl font-semibold">{currUser.firstName}</h2>
             <p className="text-gray-600">@{currUser.username}</p>
 
@@ -151,7 +154,21 @@ export default function AccountPage({ user }) {
 
               {connectionStatus == "pending" && <h3 className='mt-8 font-semibold text-sm'>pending response...</h3>}
 
-            </>) : (<></>)}
+            </>) : (<><button
+              onClick={() => {
+                setEditMode(true);
+                setEditedProfile({
+                  firstName: currUser.firstName,
+                  lastName: currUser.lastName,
+                  bio: currUser.bio || '',
+                  email: currUser.email,
+                  profilePictureUrl: currUser.profilePictureUrl || ''
+                });
+              }}
+              className="mt-4 p-2 border rounded-md hover:bg-gray-100 text-sm"
+            >
+              Edit Profile
+            </button></>)}
 
 
             <div className='mt-8 text-sm'>
@@ -164,8 +181,78 @@ export default function AccountPage({ user }) {
 
           <div className='flex-1 overflow-hidden'>
             <section className="mb-8">
-              <h3 className="text-3xl font-bold mb-2">Bio</h3>
-              <p className="text-gray-700 leading-relaxed text-lg">{currUser.bio || "No bio provided."}</p>
+
+              {editMode ? (
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    try {
+                      const formData = new FormData();
+                      formData.append("user", new Blob([JSON.stringify(editedProfile)], { type: 'application/json' }));
+                      if (editedProfile.newImageFile) {
+                        formData.append("image", editedProfile.newImageFile);
+                      }
+
+                      const response = await fetch(`http://localhost:8080/users/${currUser.id}/profile`, {
+                        method: 'PUT',
+                        body: formData
+                      });
+
+                      if (!response.ok) throw new Error('Update failed');
+                      const updatedUser = await response.json();
+                      setCurrUser(updatedUser);
+                      setEditMode(false);
+                    } catch (err) {
+                      console.error('Profile update failed:', err.message);
+                    }
+                  }}
+                  className="space-y-4"
+                >
+                  {["firstName", "lastName", "email", "profilePictureUrl", "bio"].map((field) => (
+                    <div key={field}>
+                      <label className="block text-sm font-medium capitalize">{field.replace(/([A-Z])/g, ' $1')}</label>
+                      {field === "bio" ? (
+                        <textarea
+                          rows={3}
+                          value={editedProfile[field]}
+                          onChange={(e) => setEditedProfile({ ...editedProfile, [field]: e.target.value })}
+                          className="border rounded px-2 py-1 w-full"
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={editedProfile[field]}
+                          onChange={(e) => setEditedProfile({ ...editedProfile, [field]: e.target.value })}
+                          className="border rounded px-2 py-1 w-full"
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                  <div>
+                    <label className="block text-sm font-medium">Upload Profile Picture</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        setEditedProfile(prev => ({ ...prev, newImageFile: file }));
+                      }}
+                      className="border rounded px-2 py-1 w-full"
+                    />
+                  </div>
+
+
+                  <div className="flex gap-2">
+                    <button type="submit" className="bg-teal-600 text-white px-4 py-2 rounded">Save</button>
+                    <button type="button" onClick={() => setEditMode(false)} className="text-gray-600 underline">Cancel</button>
+                  </div>
+                </form>
+              ) : (
+                <p className="text-gray-700 leading-relaxed text-lg">{currUser.bio || "No bio provided."}</p>
+              )}
+
+
             </section>
 
             <section>

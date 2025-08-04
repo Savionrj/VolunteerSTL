@@ -9,10 +9,13 @@ import com.unit_2_project.volunteer_stl.repositories.UserRepository;
 import lombok.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -35,6 +38,7 @@ public class UserController {
         user.setLastName(userData.getLastName());
         user.setEmail(userData.getEmail());
         user.setCreatedAt(java.time.LocalDateTime.now());
+        user.setProfilePictureUrl("/images/stlFlagLogo.png");
 
         userRepository.save(user);
 
@@ -153,6 +157,39 @@ public class UserController {
             return ResponseEntity.ok("User updated successfully.");
         }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found"));
     }
+
+    @PutMapping(value = "/{id}/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateProfile(
+            @PathVariable int id,
+            @RequestPart("user") UserUpdateProfileDTO dto,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+
+        return userRepository.findById(id).map(user -> {
+            user.setFirstName(dto.getFirstName());
+            user.setLastName(dto.getLastName());
+            user.setEmail(dto.getEmail());
+            user.setPhoneNumber(dto.getPhoneNumber());
+            user.setBio(dto.getBio());
+
+            if (imageFile != null && !imageFile.isEmpty()) {
+                try {
+                    String fileName = UUID.randomUUID() + "-" + imageFile.getOriginalFilename();
+                    Path path = Paths.get("uploads/profile-pictures", fileName);
+                    Files.createDirectories(path.getParent());
+                    Files.write(path, imageFile.getBytes());
+                    user.setProfilePictureUrl("/uploads/profile-pictures/" + fileName);
+                } catch (IOException e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Image upload failed.");
+                }
+            }{
+                user.setProfilePictureUrl("/images/stlFlagLogo.png");
+            }
+
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable int id) {
