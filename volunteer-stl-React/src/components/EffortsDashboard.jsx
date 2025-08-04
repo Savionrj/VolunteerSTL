@@ -143,29 +143,53 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
       </div>
       {
         sidebarOpen && (
-          <div className="fixed inset-0">
-            <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg p-4 overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">Conversations</h2>
-                <button onClick={() => setSidebarOpen(false)} className="text-xl font-bold">&times;</button>
+          <div className="fixed inset-0 z-50">
+
+            <div
+              className="absolute inset-0"
+              onClick={() => setSidebarOpen(false)}
+            />
+
+
+            <div className="absolute top-0 left-0 h-full w-72 bg-white shadow-xl p-6 flex flex-col">
+
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-gray-800">Conversations</h2>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="text-gray-600 text-2xl hover:text-gray-800 transition"
+                  aria-label="Close menu"
+                >
+                  &times;
+                </button>
               </div>
-              {conversations.length > 0 ? (
-                conversations.map((conv) => (
-                  <Link
-                    key={conv.id}
-                    to="/message"
-                    state={{ receiver: conv }}
-                    onClick={() => setSidebarOpen(false)}
-                    className="block mb-3 p-2 rounded hover:bg-gray-100"
-                  >
-                    {conv.firstName} {conv.lastName}
-                  </Link>
-                ))
-              ) : (
-                <p className="text-gray-500 text-sm">No conversations yet.</p>
-              )}
+
+
+              <div className="flex-1 overflow-y-auto space-y-4">
+                {conversations.length > 0 ? (
+                  conversations.map((conv) => (
+                    <Link
+                      key={conv.id}
+                      to="/message"
+                      state={{ receiver: conv }}
+                      onClick={() => setSidebarOpen(false)}
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition"
+                    >
+                      <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-lg uppercase">
+                        {conv.firstName[0]}
+                      </div>
+                      <span className="text-gray-800 font-medium">
+                        {conv.firstName} {conv.lastName}
+                      </span>
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-sm">No conversations yet.</p>
+                )}
+              </div>
             </div>
           </div>
+
         )
       }
     </>

@@ -7,7 +7,8 @@ export default function EffortCard({ effort }) {
 
   return (
     <Link to={`/effort/${effort.effortId}`} className="flex flex-col border border-gray-500 rounded-md my-10 mx-8">
-      <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="w-full h-58 object-cover rounded-t-md" />
+
+      <img src={`http://localhost:8080${effort.imageUrl}`} alt="Effort" className="w-full h-58 object-cover rounded-t-md" />
 
       <div className="p-3">
         <h3 className='font-semibold text-lg truncate'>{effort.effortName}</h3>

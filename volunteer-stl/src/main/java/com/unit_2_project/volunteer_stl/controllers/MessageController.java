@@ -120,7 +120,7 @@ public class MessageController {
 
         for (User user : conversationPartners) {
             UserRetrievalDTO dto = new UserRetrievalDTO();
-            
+
             dto.setId(user.getId());
             dto.setUsername(user.getUsername());
             dto.setFirstName(user.getFirstName());

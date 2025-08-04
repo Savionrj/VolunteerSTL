@@ -13,17 +13,35 @@ export default function AddEffort({ user, fetchEfforts }) {
     location: '',
     tags: '',
     description: '',
-    imageUrl: '',
+    imageFile: null,
     maxVolunteers: 500,
     donationsNeeded: false
   });
 
+  const [previewUrl, setPreviewUrl] = useState(null);
+
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
+    const { name, value, type } = e.target;
+    setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? e.target.checked : value
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setFormData(prev => ({
+      ...prev,
+      imageFile: file
+    }));
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
@@ -41,27 +59,33 @@ export default function AddEffort({ user, fetchEfforts }) {
       return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     };
 
-    const newEffort = {
-      title: formData.title,
-      date: formatDateToMMDDYYYY(formData.date),
-      startTime: formatTimeTo12Hour(formData.startTime),
-      endTime: formatTimeTo12Hour(formData.endTime),
-      location: formData.location,
-      tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : [],
-      description: formData.description,
-      imageUrl: formData.imageUrl,
-      maxVolunteers: formData.maxVolunteers,
-      donationsNeeded: formData.donationsNeeded
-    };
+    const formDataFile = new FormData();
+    formDataFile.append("title", formData.title);
+    formDataFile.append("date", formatDateToMMDDYYYY(formData.date));
+    formDataFile.append("startTime", formatTimeTo12Hour(formData.startTime));
+    formDataFile.append("endTime", formatTimeTo12Hour(formData.endTime));
+    formDataFile.append("location", formData.location);
+    formDataFile.append("description", formData.description);
+    formDataFile.append("tags", JSON.stringify(formData.tags.split(',').map(tag => tag.trim())));
+    formDataFile.append("maxVolunteers", String(formData.maxVolunteers));
+    formDataFile.append("donationsNeeded", String(formData.donationsNeeded));
+
+    if (formData.imageFile) {
+      formDataFile.append("image", formData.imageFile);
+    }
 
     try {
-      const response = await fetch(`http://localhost:8080/efforts/${user.id}`, {
+      const response = await fetch(`http://localhost:8080/efforts/new-effort/${user.id}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newEffort)
+        body: formDataFile
       });
+
+      if (!response.ok) {
+        console.error("Failed to create effort:", await response.text());
+      } else {
+        console.log("Effort created successfully");
+      }
+
     } catch (error) {
       console.error("Error during effort creation:", error);
     }
@@ -71,117 +95,128 @@ export default function AddEffort({ user, fetchEfforts }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='max-w-5xl mx-auto px-6 py-8'>
+    <form onSubmit={handleSubmit} className="p-8 bg-white shadow-lg rounded-lg space-y-6">
 
-      <div className='flex flex-col gap-4'>
-        <label className='flex flex-col text-lg font-medium'>
-          Title:
+      <h2 className="text-2xl font-bold text-gray-800 border-b pb-4">Add a New Effort</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
           <input
             type="text"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="border rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
             required
           />
-        </label>
-
-        <label className='flex flex-col text-lg font-medium'>
-          Date:
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            className="border rounded px-3 py-2"
-            required
-          />
-        </label>
-
-
-        <div className='flex gap-4'>
-          <label className='flex flex-col text-lg font-medium flex-1'>
-            Start Time:
-            <input
-              type="time"
-              name="startTime"
-              className="border rounded px-3 py-2"
-              value={formData.startTime}
-              onChange={handleChange}
-            />
-          </label>
-          <label className='flex flex-col text-lg font-medium flex-1'>
-            End Time:
-            <input
-              type="time"
-              name="endTime"
-              className="border rounded px-3 py-2"
-              value={formData.endTime}
-              onChange={handleChange}
-            />
-          </label>
         </div>
 
-        <label className='flex flex-col text-lg font-medium'>
-          Location:
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            placeholder="e.g., 123 Main St, City, State 12345"
-            className="border rounded px-3 py-2"
-          />
-        </label>
-      </div>
-
-      <div className='flex flex-col gap-4'>
-        <label className='flex flex-col text-lg font-medium'>
-          Description:
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
           <textarea
             name="description"
             rows="2"
             value={formData.description}
             onChange={handleChange}
-            className="border rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-teal-500"
+            required
           />
-        </label>
-        <label className='flex flex-col text-lg font-medium'>
-          Tags:
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
           <input
             type="text"
             name="tags"
             value={formData.tags}
             onChange={handleChange}
-            className="border rounded px-3 py-2"
+            placeholder="Comma-separated (e.g. food,school,trees)"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
-        </label>
-        <div className='flex justify-around'>
-          <label className='flex flex-col text-lg font-medium'>
-            Image:
-            <img src={volunteerImage} alt="A volunteer with back turned to the camera" className="h-24 w-32 object-cover bg-gray-100 border rounded" />
-          </label>
-          <div className='flex flex-col'>
-            <label className='flex flex-col text-lg font-medium flex-1'>Max Volunteers
-              <input
-                type="number"
-                name="maxVolunteers"
-                value={formData.maxVolunteers}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+          <input
+            type="time"
+            name="startTime"
+            value={formData.startTime}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+          <input
+            type="time"
+            name="endTime"
+            value={formData.endTime}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            required
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+          <input
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            placeholder="123 Main St, City, State zipcode"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+          <input
+            type="file"
+            accept="image/*"
+
+            className='w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500'
+            onChange={handleImageChange}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Max Volunteers</label>
+          <input
+            type="number"
+            name="maxVolunteers"
+            value={formData.maxVolunteers}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
         </div>
       </div>
 
-      <div className="mt-8 text-center">
+      <div className="pt-6 text-center">
         <button
           type="submit"
-          className=" px-6 py-3 rounded shadow"
+          className="bg-teal-600 text-white px-6 py-3 rounded-md hover:bg-teal-700 transition"
         >
           Add Effort
         </button>
       </div>
     </form>
+
+
   )
 }

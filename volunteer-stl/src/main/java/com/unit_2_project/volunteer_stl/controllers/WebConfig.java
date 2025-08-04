@@ -1,2 +1,16 @@
-package com.unit_2_project.volunteer_stl.controllers;public class WebConfig {
+package com.unit_2_project.volunteer_stl.controllers;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+                .addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
+    }
 }

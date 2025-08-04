@@ -1,5 +1,7 @@
 package com.unit_2_project.volunteer_stl.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unit_2_project.volunteer_stl.models.Tag;
 import com.unit_2_project.volunteer_stl.models.User;
 import com.unit_2_project.volunteer_stl.models.dtos.effortDTOs.*;
@@ -8,16 +10,23 @@ import com.unit_2_project.volunteer_stl.repositories.EffortRepository;
 import com.unit_2_project.volunteer_stl.repositories.UserRepository;
 import com.unit_2_project.volunteer_stl.repositories.TagRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -29,25 +38,42 @@ public class EffortController {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
-    @PostMapping("/{organizerId}")
-    public ResponseEntity<Effort> createEffort(@PathVariable int organizerId, @RequestBody EffortCreationDTO effortData) {
+    @PostMapping(path = "/new-effort/{organizerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Effort> createEffort(@PathVariable int organizerId,
+                                               @RequestParam("title") String title,
+                                               @RequestParam("description") String description,
+                                               @RequestParam("date") String date,
+                                               @RequestParam("startTime") String startTime,
+                                               @RequestParam("endTime") String endTime,
+                                               @RequestParam("location") String location,
+                                               @RequestParam("tags") String tagsJson,
+                                               @RequestParam("maxVolunteers") int maxVolunteers,
+                                               @RequestParam("donationsNeeded") boolean donationsNeeded,
+                                               @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+
+        System.out.println(title + '\n' + description + '\n' + date + '\n' + startTime + '\n' + endTime +
+                '\n' + location + '\n' + tagsJson + '\n' + maxVolunteers + '\n' + donationsNeeded);
+
         try{
             User organizer = userRepository.findById(organizerId)
                     .orElseThrow(() -> new RuntimeException("Organizer not found"));
 
             Effort effort = new Effort();
-            effort.setTitle(effortData.getTitle());
-            effort.setDescription(effortData.getDescription());
+            effort.setTitle(title);
+            effort.setDescription(description);
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
-            LocalDate date = LocalDate.parse(effortData.getDate(), dateFormatter);
-            LocalTime start = LocalTime.parse(effortData.getStartTime(), timeFormatter);
-            LocalTime end = LocalTime.parse(effortData.getEndTime(), timeFormatter);
-            effort.setStartTime(LocalDateTime.of(date, start));
-            effort.setEndTime(LocalDateTime.of(date, end));
 
-            String[] parts = effortData.getLocation().split(",");
+            LocalDate parsedDate = LocalDate.parse(date, dateFormatter);
+            LocalTime start = LocalTime.parse(startTime, timeFormatter);
+            LocalTime end = LocalTime.parse(endTime, timeFormatter);
+
+            effort.setStartTime(LocalDateTime.of(parsedDate, start));
+            effort.setEndTime(LocalDateTime.of(parsedDate, end));
+
+
+            String[] parts = location.split(",");
             if (parts.length < 3) {
                 return ResponseEntity.badRequest().body(null);
             }
@@ -64,26 +90,34 @@ public class EffortController {
             effort.setZipCode(zip);
 
 
-            List<Tag> tags = effortData.getTags().stream()
-                    .map(name -> {
-                        return tagRepository.findByNameIgnoreCase(name.trim())
-                                .orElseGet(() -> tagRepository.save(new Tag(name.trim())));
-                    })
+            ObjectMapper mapper = new ObjectMapper();
+            List<String> tagList = mapper.readValue(tagsJson, new TypeReference<List<String>>() {});
+            List<Tag> tags = tagList.stream()
+                    .map(name -> tagRepository.findByNameIgnoreCase(name.trim())
+                            .orElseGet(() -> tagRepository.save(new Tag(name.trim()))))
                     .toList();
 
             effort.setTags(tags);
 
-            effort.setMaxVolunteers(effortData.getMaxVolunteers());
-            effort.setDonationsNeeded(effortData.isDonationsNeeded());
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+                Path uploadPath = Paths.get("uploads/images");
+                Files.createDirectories(uploadPath);
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                effort.setImageUrl("/uploads/images/" + fileName);
+            }
+
+            effort.setMaxVolunteers(maxVolunteers);
+            effort.setDonationsNeeded(donationsNeeded);
             effort.setEffortCompleted(false);
             effort.setCreatedAt(java.time.LocalDateTime.now());
-            effort.setDescription(effortData.getDescription());
-            effort.setImageUrl(effortData.getImageUrl());
 
             effort.setOrganizer(organizer);
 
             effortRepository.save(effort);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(effort);
+
 
         }catch (Exception e) {
             e.printStackTrace();
