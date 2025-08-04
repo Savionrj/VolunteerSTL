@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import filterEfforts from "../filterEfforts";
 
-export default function EffortsDashboard({ allEfforts, user }) {
+export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conversations, setSidebarOpen }) {
 
   const [search, setSearch] = useState('');
   const [filterOption, setFilterOption] = useState('Efforts');
@@ -43,7 +43,7 @@ export default function EffortsDashboard({ allEfforts, user }) {
       try {
         const res = await fetch(`http://localhost:8080/connections/accepted?userId=${user.id}`);
         const data = await res.json();
-        setConnections(data); // each item has .id, .firstName, etc.
+        setConnections(data);
       } catch (err) {
         console.error("Failed to load accepted connections:", err.message);
       }
@@ -77,68 +77,97 @@ export default function EffortsDashboard({ allEfforts, user }) {
   }, [connections, filterOption]);
 
   return (
-    <div>
-      < EffortFilterSection setFilterOption={setFilterOption} search={search} setSearch={setSearch} setSortType={setSortType} />
+    <>
+      <div>
+        < EffortFilterSection setFilterOption={setFilterOption} search={search} setSearch={setSearch} setSortType={setSortType} />
 
-      <div className="grid grid-cols-3 ">
-        {filterOption === "Efforts" && (filteredEfforts.length > 0 ? (
-          filteredEfforts.map((effort) => (
-            <EffortCard key={effort.id || effort.effortId} effort={effort} />
-          ))
-        ) : (
-          <p className="col-span-3 text-center text-gray-500 pt-15">No efforts to show.</p>
-        ))}
+        <div className="grid grid-cols-3 ">
+          {filterOption === "Efforts" && (filteredEfforts.length > 0 ? (
+            filteredEfforts.map((effort) => (
+              <EffortCard key={effort.id || effort.effortId} effort={effort} />
+            ))
+          ) : (
+            <p className="col-span-3 text-center text-gray-500 pt-15">No efforts to show.</p>
+          ))}
 
-        {filterOption === "My Efforts" && (filteredEfforts.length > 0 ? (
-          filteredEfforts.map((effort) => (
-            <EffortCard key={effort.id || effort.effortId} effort={effort} />
-          ))
-        ) : (
-          <p className="col-span-3 text-center text-gray-500 pt-15">You have no efforts to show.</p>
-        ))}
+          {filterOption === "My Efforts" && (filteredEfforts.length > 0 ? (
+            filteredEfforts.map((effort) => (
+              <EffortCard key={effort.id || effort.effortId} effort={effort} />
+            ))
+          ) : (
+            <p className="col-span-3 text-center text-gray-500 pt-15">You have no efforts to show.</p>
+          ))}
 
-        {filterOption === "Connects" && (
-          <div className="space-y-12 mt-10">
-            {connections.length > 0 ? (
-              connections.map((conn) => (
-                <div key={conn.id} className="w-[100vw]">
+          {filterOption === "Connects" && (
+            <div className="space-y-12 mt-10">
+              {connections.length > 0 ? (
+                connections.map((conn) => (
+                  <div key={conn.id} className="w-[100vw]">
 
-                  <Link to={`account/${conn.id}`} className="flex items-center gap-4 px-12">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-bold text-lg uppercase">
-                      {conn.firstName[0]}
-                    </div>
-                    <h2 className="text-2xl font-semibold text-gray-800">
-                      {conn.firstName} {conn.lastName}
-                    </h2>
-                  </Link>
-
-
-                  {(connectionEfforts[conn.id]?.length > 0) ? (
-                    <div className="flex overflow-x-auto px-2">
-                      {connectionEfforts[conn.id].map((effort) => (
-                        <div
-                          key={effort.id || effort.effortId}
-                          className="flex-shrink-0"
-                        >
-                          <EffortCard effort={effort} />
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-500 italic px-2 ml-12">No efforts from this user.</p>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-gray-500 text-lg">No connections to show.</p>
-            )}
-          </div>
-        )}
+                    <Link to={`account/${conn.id}`} className="flex items-center gap-4 px-12">
+                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-bold text-lg uppercase">
+                        {conn.firstName[0]}
+                      </div>
+                      <h2 className="text-2xl font-semibold text-gray-800">
+                        {conn.firstName} {conn.lastName}
+                      </h2>
+                    </Link>
 
 
+                    {(connectionEfforts[conn.id]?.length > 0) ? (
+                      <div className="flex overflow-x-auto px-2">
+                        {connectionEfforts[conn.id].map((effort) => (
+                          <div
+                            key={effort.id || effort.effortId}
+                            className="flex-shrink-0"
+                          >
+                            <EffortCard effort={effort} />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 italic px-2 ml-12">No efforts from this user.</p>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500 text-lg">No connections to show.</p>
+              )}
+            </div>
+          )}
 
 
+
+
+        </div>
       </div>
-    </div>
+      {
+        sidebarOpen && (
+          <div className="fixed inset-0">
+            <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg p-4 overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Conversations</h2>
+                <button onClick={() => setSidebarOpen(false)} className="text-xl font-bold">&times;</button>
+              </div>
+              {conversations.length > 0 ? (
+                conversations.map((conv) => (
+                  <Link
+                    key={conv.id}
+                    to="/message"
+                    state={{ receiver: conv }}
+                    onClick={() => setSidebarOpen(false)}
+                    className="block mb-3 p-2 rounded hover:bg-gray-100"
+                  >
+                    {conv.firstName} {conv.lastName}
+                  </Link>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm">No conversations yet.</p>
+              )}
+            </div>
+          </div>
+        )
+      }
+    </>
   );
 }

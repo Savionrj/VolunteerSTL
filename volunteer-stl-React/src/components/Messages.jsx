@@ -39,7 +39,6 @@ export default function Messages({ user }) {
 
       if (!response.ok) throw new Error("Failed to send message");
       const sentMessage = await response.json();
-      console.log(sentMessage);
       setMessages(prev => [...prev, sentMessage]);
       setNewMessage("");
 

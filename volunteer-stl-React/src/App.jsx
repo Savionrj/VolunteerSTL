@@ -17,6 +17,9 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [conversations, setConversations] = useState([]);
+
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser) : null;
@@ -93,13 +96,26 @@ function App() {
     setHasNotifications(!!pendingConnections.length);
   }, [pendingConnections]);
 
+  useEffect(() => {
+    const fetchConversations = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/messages/conversations?userId=${user.id}`);
+        const data = await res.json();
+        setConversations(data);
+      } catch (err) {
+        console.error("Failed to fetch conversations:", err.message);
+      }
+    };
+
+    fetchConversations();
+  }, [user]);
   return (
     <>
       <Router>
         {!user ?
-          (<LoginSignUpPage setUser={setUser} />) : (<><Header user={user} hasNotifications={hasNotifications} />
+          (<LoginSignUpPage setUser={setUser} />) : (<><Header user={user} hasNotifications={hasNotifications} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
             <Routes>
-              <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} />} />
+              <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} sidebarOpen={sidebarOpen} conversations={conversations} setSidebarOpen={setSidebarOpen} />} />
               <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
               <Route path="/account/:userId" element={<AccountPage user={user} />} />
               <Route path="/add-effort" element={<AddEffort user={user} fetchEfforts={fetchEfforts} />} />

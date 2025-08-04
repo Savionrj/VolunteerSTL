@@ -11,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -87,4 +85,53 @@ public class MessageController {
 
         return null;
     }
+
+    @GetMapping("/conversations")
+    public ResponseEntity<List<UserRetrievalDTO>> getConversations(@RequestParam int userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        }
+
+        User currentUser = optionalUser.get();
+
+        Set<User> conversationPartners = new HashSet<>();
+
+        List<Message> sentMessages = messageRepository.findAllBySender(currentUser);
+        List<Message> receivedMessages = messageRepository.findAllByRecipient(currentUser);
+
+        if (sentMessages != null) {
+            for (Message message : sentMessages) {
+                if (message.getRecipient() != null) {
+                    conversationPartners.add(message.getRecipient());
+                }
+            }
+        }
+
+        if (receivedMessages != null) {
+            for (Message message : receivedMessages) {
+                if (message.getSender() != null) {
+                    conversationPartners.add(message.getSender());
+                }
+            }
+        }
+
+        List<UserRetrievalDTO> result = new ArrayList<>();
+
+        for (User user : conversationPartners) {
+            UserRetrievalDTO dto = new UserRetrievalDTO();
+            
+            dto.setId(user.getId());
+            dto.setUsername(user.getUsername());
+            dto.setFirstName(user.getFirstName());
+            dto.setLastName(user.getLastName());
+            dto.setBio(user.getBio());
+            dto.setProfilePictureUrl(user.getProfilePictureUrl());
+            result.add(dto);
+        }
+
+        return ResponseEntity.ok(Collections.unmodifiableList(result));
+    }
+
+
 }
