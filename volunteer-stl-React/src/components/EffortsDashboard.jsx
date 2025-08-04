@@ -3,6 +3,7 @@ import EffortFilterSection from "./EffortFilterSection";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import filterEfforts from "../filterEfforts";
+import { LuMessageCircleMore } from "react-icons/lu";
 
 export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conversations, setSidebarOpen }) {
 
@@ -76,6 +77,10 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
     }
   }, [connections, filterOption]);
 
+  const toggleMessageMenu = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <>
       <div>
@@ -141,6 +146,8 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
 
 
         </div>
+
+        <button onClick={toggleMessageMenu} className='fixed bottom-4 right-4 border rounded-full shadow-2xl p-4 text-3xl bg-white z-50'><LuMessageCircleMore /></button>
       </div>
       {
         sidebarOpen && (

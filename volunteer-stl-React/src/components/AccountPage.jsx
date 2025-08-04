@@ -249,7 +249,10 @@ export default function AccountPage({ user }) {
                   </div>
                 </form>
               ) : (
-                <p className="text-gray-700 leading-relaxed text-lg">{currUser.bio || "No bio provided."}</p>
+                <>
+                  <h3 className="text-3xl font-bold">Bio</h3>
+                  <p className="text-gray-700 leading-relaxed text-lg">{currUser.bio || "No bio provided."}</p>
+                </>
               )}
 
 

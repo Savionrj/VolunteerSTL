@@ -7,6 +7,8 @@ export default function EffortPage({ efforts, user }) {
   const { effortId } = useParams();
   const [registered, setRegistered] = useState();
   const [userEffortCount, setUserEffortCount] = useState(0);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
 
   const currentEffort = efforts.find(
     (effort) => effort.effortId.toString() === effortId
@@ -46,6 +48,43 @@ export default function EffortPage({ efforts, user }) {
     fetchCount();
     setRegisterState();
   }, [user, currentEffort, setRegisterState]);
+
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/effort-comments/${effortId}`);
+      if (!response.ok) throw new Error("Failed to fetch comments");
+      const data = await response.json();
+      setComments(data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, [effortId]);
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    try {
+      const response = await fetch(`http://localhost:8080/effort-comments?effortId=${effortId}&userId=${user.id}`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ comment: newComment })
+
+      });
+
+      if (!response.ok) throw new Error("Failed to post comment");
+      setNewComment("");
+      fetchComments();
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   const handleRegister = async (e) => {
 
@@ -156,8 +195,42 @@ export default function EffortPage({ efforts, user }) {
           <p>{currentEffort.description}</p>
         </div>
 
-        <div /*TODO - create comment section after setting up endpoints for effort comments*/>
+        <div className="p-8 text-xl border-t border-gray-300">
+          <h4 className="text-2xl mb-4">Comments</h4>
+
+          {user && (
+            <form onSubmit={handleCommentSubmit} className="mb-6">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Write your comment..."
+                className="w-full border px-3 py-2 rounded mb-2"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 rounded bg-gray-800 text-white disabled:bg-gray-300"
+                disabled={!newComment.trim()}
+              >
+                Post
+              </button>
+            </form>
+          )}
+
+          {comments.length === 0 ? (
+            <p className="text-gray-500">No comments yet. Be the first to post one!</p>
+          ) : (
+            <ul className="space-y-4">
+              {comments.map((c) => (
+                <li key={c.id} className="border p-3 rounded">
+                  <div className="font-semibold mb-1">@{c.username}</div>
+                  <p className="mb-1">{c.comment}</p>
+                  <div className="text-sm text-gray-500">{new Date(c.postedAt).toLocaleString()}</div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
+
       </div>
     </div>
   )
