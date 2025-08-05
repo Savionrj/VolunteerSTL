@@ -86,7 +86,7 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
       <div>
         < EffortFilterSection setFilterOption={setFilterOption} search={search} setSearch={setSearch} setSortType={setSortType} />
 
-        <div className="grid grid-cols-3 ">
+        <div className="grid grid-cols-3 gap-x-6 gap-y-0 p-4">
           {filterOption === "Efforts" && (filteredEfforts.length > 0 ? (
             filteredEfforts.map((effort) => (
               <EffortCard key={effort.id || effort.effortId} effort={effort} />
@@ -104,14 +104,14 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
           ))}
 
           {filterOption === "Connects" && (
-            <div className="space-y-12 mt-10">
+            <div className="mt-12">
               {connections.length > 0 ? (
                 connections.map((conn) => (
                   <div key={conn.id} className="w-[100vw]">
 
-                    <Link to={`account/${conn.id}`} className="flex items-center gap-4 px-12">
+                    <Link to={`account/${conn.id}`} className="flex items-center gap-4 px-4">
 
-                      <img className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-bold text-lg uppercase" src={`http://localhost:8080${conn.profilePictureUrl}`} />
+                      <img className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-bold" src={`http://localhost:8080${conn.profilePictureUrl}`} />
 
 
                       <h2 className="text-2xl font-semibold text-gray-800">
@@ -121,11 +121,11 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
 
 
                     {(connectionEfforts[conn.id]?.length > 0) ? (
-                      <div className="flex overflow-x-auto px-2">
+                      <div className="flex overflow-x-auto px-2 gap-4">
                         {connectionEfforts[conn.id].map((effort) => (
                           <div
                             key={effort.id || effort.effortId}
-                            className="flex-shrink-0"
+                            className="w-1/3 flex-shrink-0"
                           >
                             <EffortCard effort={effort} />
                           </div>
@@ -137,7 +137,7 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
                   </div>
                 ))
               ) : (
-                <p className="text-center text-gray-500 text-lg">No connections to show.</p>
+                <div className="grid grid-cols-3 w-[100vw]"><p className="col-span-3 text-center text-gray-500 pt-5">No connections to show.</p></div>
               )}
             </div>
           )}

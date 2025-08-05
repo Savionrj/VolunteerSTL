@@ -208,7 +208,7 @@ export default function AccountPage({ user }) {
                   }}
                   className="space-y-4"
                 >
-                  {["firstName", "lastName", "email", "profilePictureUrl", "bio"].map((field) => (
+                  {["firstName", "lastName", "email", "bio"].map((field) => (
                     <div key={field}>
                       <label className="block text-sm font-medium capitalize">{field.replace(/([A-Z])/g, ' $1')}</label>
                       {field === "bio" ? (
@@ -261,6 +261,7 @@ export default function AccountPage({ user }) {
             <section>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-3xl font-bold">Efforts {currUser.firstName} Created</h3>
+
                 {organizedEfforts?.length > 3 && (
                   <div className="flex gap-2">
                     <button onClick={scrollLeft} className="p-2 rounded-full hover:bg-gray-200">
@@ -279,7 +280,8 @@ export default function AccountPage({ user }) {
                   className="flex overflow-x-auto space-x-4 scrollbar-hide pb-4"
                 >
                   {organizedEfforts.map((effort) => (
-                    <div key={effort.id || effort.effortId} className="min-w-[300px] flex-shrink-0">
+                    <div key={effort.id || effort.effortId}
+                      className="w-[30vw] h-[400px] flex-shrink-0 rounded-md">
                       <EffortCard effort={effort} />
                     </div>
                   ))}

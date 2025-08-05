@@ -174,7 +174,7 @@ export default function EffortPage({ efforts, user }) {
 
       <div>
         <div className="flex justify-between items-center p-8">
-          <img src={`http://localhost:8080${currentEffort.imageUrl}`} alt="Effort" className="w-1/2 h-full object-cover rounded-md" />
+          <img src={`http://localhost:8080${currentEffort.imageUrl}`} alt="Effort" className="w-full h-[60vh] object-cover rounded-md" />
           <div className="flex flex-col w-full text-2xl px-10">
             <h4 className="text-3xl">Details</h4>
             <p>Date: {formatDate(currentEffort.startTime)}</p>

@@ -73,6 +73,7 @@ function App() {
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchEfforts();
   }, []);
 

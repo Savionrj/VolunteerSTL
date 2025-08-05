@@ -181,7 +181,7 @@ public class UserController {
                 } catch (IOException e) {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Image upload failed.");
                 }
-            }{
+            }else{
                 user.setProfilePictureUrl("/images/stlFlagLogo.png");
             }
 
