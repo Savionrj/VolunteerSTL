@@ -240,7 +240,7 @@ export default function EffortPage({ efforts, user }) {
       </div>
 
       <div>
-        <div className="flex justify-between items-center p-8 pb-20">
+        <div className="flex flex-col justify-between items-center p-8 pb-20 sm:flex-col md:flex-col lg:flex-row">
           <img src={`http://localhost:8080${currentEffort.imageUrl}`} alt="Effort" className="w-full h-[60vh] object-cover rounded-md" />
 
           {editMode ? (
@@ -405,32 +405,44 @@ export default function EffortPage({ efforts, user }) {
                 </button>
               </div>
             </form>
-          ) : (<div className="flex flex-col w-full text-2xl px-10">
-            <h4 className="text-3xl">Details</h4>
-            <p>Date: {formatDate(currentEffort.startTime)}</p>
-            <p>Starting Time: {formatTime(currentEffort.startTime)} </p>
-            <p>Ending Time: {formatTime(currentEffort.endTime)} </p>
-            <p>Location: {currentEffort.address}
-              <br />
-              {currentEffort.city}, {currentEffort.state} {currentEffort.zipCode}
+          ) : (<div className="flex flex-col w-full px-10 py-6 bg-white sm:rounded-b-3xl lg:rounded-r-3xl shadow-md space-y-4 text-gray-800 text-lg md:text-xl">
+            <h4 className="text-3xl font-bold text-[#162c64] mb-2">Details</h4>
+
+            <div className="flex flex-col gap-1">
+              <p><span className="font-semibold">Date:</span> {formatDate(currentEffort.startTime)}</p>
+              <p><span className="font-semibold">Starting Time:</span> {formatTime(currentEffort.startTime)}</p>
+              <p><span className="font-semibold">Ending Time:</span> {formatTime(currentEffort.endTime)}</p>
+            </div>
+
+            <div className="mt-2">
+              <p className="font-semibold">Location:</p>
+              <p className="ml-2">
+                {currentEffort.address}
+                <br />
+                {currentEffort.city}, {currentEffort.state} {currentEffort.zipCode}
+              </p>
+            </div>
+
+            {Array.isArray(currentEffort.tags) && currentEffort.tags.length > 0 && (
+              <p>
+                <span className="font-semibold">Tags:</span> {currentEffort.tags.map(tag => tag.name).join(', ')}
+              </p>
+            )}
+
+            <p>
+              <span className="font-semibold">Volunteer Count:</span> {userEffortCount} / {currentEffort.maxVolunteers}
             </p>
-
-            {
-              Array.isArray(currentEffort.tags) && currentEffort.tags.length > 0 && (
-                <p>Tags: {currentEffort.tags.map(tag => tag.name).join(', ')}</p>
-              )}
-
-            <p>Volunteer Count: {userEffortCount} / {currentEffort.maxVolunteers} </p>
-          </div>)}
+          </div>
+          )}
         </div>
 
-        {!editMode && (<div className="p-8 text-2xl">
-          <h4>Description</h4>
-          <p>{currentEffort.description}</p>
-        </div>)}
+        {!editMode && (<div className="px-8 pb-8 text-gray-800 text-lg md:text-xl space-y-4">
+          <h4 className="text-3xl font-bold text-[#162c64]">Description</h4>
+          <p className="leading-relaxed">{currentEffort.description}</p>
+        </div>
+        )}
 
-
-        <div className="p-8 text-xl border-t border-gray-300">
+        {!editMode && (<div className="p-8 text-xl border-t border-gray-300">
           <h4 className="text-2xl mb-4">Comments</h4>
 
           {user && (
@@ -464,7 +476,8 @@ export default function EffortPage({ efforts, user }) {
               ))}
             </ul>
           )}
-        </div>
+        </div>)}
+
 
       </div>
 

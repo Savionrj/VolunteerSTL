@@ -4,7 +4,7 @@ import NotificationCard from "./NotificationCard"
 export default function Notifications({ user, pendingConnections, getPendingConnections }) {
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
+    <div className="mx-auto px-4 py-10">
       <h2 className="text-3xl font-bold mb-6">Notifications</h2>
 
       {(pendingConnections.length > 0 ? (

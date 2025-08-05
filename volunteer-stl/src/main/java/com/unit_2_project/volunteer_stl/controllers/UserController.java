@@ -186,7 +186,17 @@ public class UserController {
             }
 
             userRepository.save(user);
-            return ResponseEntity.ok(user);
+            UserRetrievalDTO userRetrievalDTO = new UserRetrievalDTO(
+                    user.getId(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getBio(),
+                    user.getProfilePictureUrl(),
+                    user.getUsername()
+            );
+
+            return ResponseEntity.ok(userRetrievalDTO);
         }).orElse(ResponseEntity.notFound().build());
     }
 

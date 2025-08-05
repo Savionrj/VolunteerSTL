@@ -80,7 +80,7 @@ export default function LoginSignUpPage({ setUser }) {
 
   return (
     <div className='flex flex-col items-center justify-around h-screen bg-[#162c64] text-white'>
-      <h3 className='text-9xl font-bold h-1/5'>VOLUNTEER STL</h3>
+      <h3 className='font-bold sm:text-6xl md:text-8xl lg:text-9xl'>VOLUNTEER STL</h3>
 
       {loginPage ?
         (

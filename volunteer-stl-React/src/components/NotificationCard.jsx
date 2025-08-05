@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import Button from "./Button";
 
 export default function NotificationCard({ connectionRequest, onRespond }) {
 
@@ -39,8 +40,11 @@ export default function NotificationCard({ connectionRequest, onRespond }) {
       </Link>
 
       {connectionRequest && (<div className="flex gap-3">
-        <button onClick={acceptConnection} className="px-4 py-2 rounded-md text-sm hover:bg-[#162c64] hover:text-white transition">Accept</button>
-        <button onClick={declineConnection} className="px-4 py-2 rounded-md text-sm hover:bg-red-700 hover:text-white transition">Decline</button>
+
+        <Button clickedIt={acceptConnection} buttonName={'Accept'} classname="px-4 py-2 rounded-md text-sm hover:bg-[#162c64] hover:text-white transition" />
+
+        <Button clickedIt={declineConnection} buttonName={'Decline'} classname="px-4 py-2 rounded-md text-sm hover:bg-red-700 hover:text-white transition" />
+
       </div>)}
 
     </div>

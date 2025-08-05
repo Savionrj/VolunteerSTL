@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import volunteerImage from '../images/volunteer.jpg';
 import { FaPlus } from "react-icons/fa";
 import EffortCard from './EffortCard';
+import Button from './Button';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 export default function AccountPage({ user }) {
@@ -15,6 +16,8 @@ export default function AccountPage({ user }) {
   const [editMode, setEditMode] = useState(false);
   const [editedProfile, setEditedProfile] = useState({});
 
+
+  //This fetches the user whose account we're trying to access
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -35,6 +38,7 @@ export default function AccountPage({ user }) {
   const [organizedCount, setOrganizedCount] = useState();
   const [organizedEfforts, setOrganizedEfforts] = useState();
 
+  //This fetches the
   const getCompletedCount = async () => {
     try {
       const response = await fetch(`http://localhost:8080/user-efforts/count-completed-efforts?userId=${currUser.id}`);
@@ -153,21 +157,21 @@ export default function AccountPage({ user }) {
 
               {connectionStatus == "pending" && <h3 className='text-sm text-gray-400 mt-4'>pending response...</h3>}
 
-            </>) : (<><button
-              onClick={() => {
-                setEditMode(!editMode);
-                setEditedProfile({
-                  firstName: currUser.firstName,
-                  lastName: currUser.lastName,
-                  bio: currUser.bio || '',
-                  email: currUser.email,
-                  profilePictureUrl: currUser.profilePictureUrl || ''
-                });
-              }}
-              className="mt-4 p-2 border rounded-md hover:bg-gray-100 text-sm"
-            >
-              Edit Profile
-            </button></>)}
+            </>) : (
+              <Button
+                clickedIt={() => {
+                  setEditMode(!editMode);
+                  setEditedProfile({
+                    firstName: currUser.firstName,
+                    lastName: currUser.lastName,
+                    bio: currUser.bio || '',
+                    email: currUser.email,
+                    profilePictureUrl: currUser.profilePictureUrl || ''
+                  });
+                }}
+                buttonName={'Edit Profile'}
+                classname={"mt-4 p-2 border rounded-md hover:bg-gray-100 text-sm"} />
+            )}
 
 
             <div className='mt-8 text-sm'>
@@ -187,10 +191,16 @@ export default function AccountPage({ user }) {
                     e.preventDefault();
                     try {
                       const formData = new FormData();
-                      formData.append("user", new Blob([JSON.stringify(editedProfile)], { type: 'application/json' }));
-                      if (editedProfile.newImageFile) {
-                        formData.append("image", editedProfile.newImageFile);
+
+
+                      const { newImageFile, ...sanitizedProfile } = editedProfile;
+
+                      formData.append("user", new Blob([JSON.stringify(sanitizedProfile)], { type: 'application/json' }));
+                      if (newImageFile) {
+                        formData.append("image", newImageFile);
                       }
+
+
 
                       const response = await fetch(`http://localhost:8080/users/${currUser.id}/profile`, {
                         method: 'PUT',
@@ -244,8 +254,14 @@ export default function AccountPage({ user }) {
 
 
                   <div className="flex gap-2">
-                    <button type="submit" className="bg-teal-600 text-white px-4 py-2 rounded">Save</button>
+
+
+                    <button type="submit" className="bg-blue-900 text-white px-4 py-2 rounded">Save</button>
+
+
                     <button type="button" onClick={() => setEditMode(false)} className="text-gray-600 underline">Cancel</button>
+
+
                   </div>
                 </form>
               ) : (
@@ -287,7 +303,7 @@ export default function AccountPage({ user }) {
                   ))}
                 </div>
               ) : (
-                <p className="text-xl text-gray-500">You haven't created any efforts.</p>
+                <p className="text-xl text-gray-500">{currUser.firstName} hasn't created any efforts.</p>
               )}
             </section>
           </div>
