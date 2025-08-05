@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import volunteerImage from '../images/volunteer.jpg';
 
 export default function AddEffort({ user, fetchEfforts }) {
   const nav = useNavigate();
@@ -14,7 +13,7 @@ export default function AddEffort({ user, fetchEfforts }) {
     tags: '',
     description: '',
     imageFile: null,
-    maxVolunteers: 500,
+    maxVolunteers: 150,
     donationsNeeded: false
   });
 

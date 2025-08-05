@@ -38,7 +38,7 @@ export default function AccountPage({ user }) {
   const [organizedCount, setOrganizedCount] = useState();
   const [organizedEfforts, setOrganizedEfforts] = useState();
 
-  //This fetches the
+  //This fetches the amount of efforts completed by a user
   const getCompletedCount = async () => {
     try {
       const response = await fetch(`http://localhost:8080/user-efforts/count-completed-efforts?userId=${currUser.id}`);
@@ -52,6 +52,7 @@ export default function AccountPage({ user }) {
     }
   };
 
+  //Fetches the amount of efforts organized by a user
   const getOrganizedCount = async () => {
     try {
       const response = await fetch(`http://localhost:8080/user-efforts/count-organized-efforts?userId=${currUser.id}`);
@@ -65,6 +66,7 @@ export default function AccountPage({ user }) {
     }
   };
 
+  //Retrieves all efforts organized by the user
   const getOrganizedEfforts = async () => {
     try {
       const response = await fetch(`http://localhost:8080/user-efforts/get-organized-efforts?userId=${currUser.id}`);
@@ -78,6 +80,7 @@ export default function AccountPage({ user }) {
     }
   };
 
+  //Ensures that the stats are up to date whenever a user's page is viewed
   useEffect(() => {
     if (currUser) {
       getCompletedCount();
@@ -88,22 +91,23 @@ export default function AccountPage({ user }) {
 
   const [viewingSelf, setViewingSelf] = useState();
 
+  //This will be used to conditionally render elements if a user is viewing their own account
   useEffect(() => {
     if (currUser && user) {
       setViewingSelf(currUser.id === user.id);
     }
   }, [currUser, user]);
 
+  //The are for navigating a scrollable list
   const scrollRef = useRef(null);
-
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
   };
-
   const scrollRight = () => {
     scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
   };
 
+  //This retrieves the status of a connection, it will be used to conditionally render elements
   const checkExistingConnection = async () => {
     try {
       const response = await fetch(`http://localhost:8080/connections/already-connected?currUserId=${user.id}&viewedUserId=${userId}`);
@@ -121,6 +125,7 @@ export default function AccountPage({ user }) {
     checkExistingConnection();
   }, [userId]);
 
+  //This creates a new connection request
   const handleConnectionSent = async () => {
     try {
       const response = await fetch(`http://localhost:8080/connections?senderId=${user.id}&receiverId=${userId}`, { method: 'POST' });
@@ -297,7 +302,7 @@ export default function AccountPage({ user }) {
                 >
                   {organizedEfforts.map((effort) => (
                     <div key={effort.id || effort.effortId}
-                      className="w-[30vw] h-[400px] flex-shrink-0 rounded-md">
+                      className="flex-shrink-0 rounded-md w-[400px] h-[400px] ">
                       <EffortCard effort={effort} />
                     </div>
                   ))}
