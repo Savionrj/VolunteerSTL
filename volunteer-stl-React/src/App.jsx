@@ -9,6 +9,7 @@ import AddEffort from './components/AddEffort'
 import Settings from './components/Settings';
 import Notifications from './components/Notifications';
 import Messages from './components/Messages';
+import AboutPage from './components/AboutPage';
 
 function App() {
   const [allEfforts, setEfforts] = useState([]);
@@ -121,6 +122,7 @@ function App() {
           (<LoginSignUpPage setUser={setUser} />) : (<><Header user={user} hasNotifications={hasNotifications} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
             <Routes>
               <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} sidebarOpen={sidebarOpen} conversations={conversations} setSidebarOpen={setSidebarOpen} />} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
               <Route path="/account/:userId" element={<AccountPage user={user} />} />
               <Route path="/add-effort" element={<AddEffort user={user} fetchEfforts={fetchEfforts} />} />
