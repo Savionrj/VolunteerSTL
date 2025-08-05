@@ -86,7 +86,7 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
       <div>
         < EffortFilterSection setFilterOption={setFilterOption} search={search} setSearch={setSearch} setSortType={setSortType} />
 
-        <div className="grid grid-cols-3 gap-x-6 gap-y-0 p-4">
+        <div className="bg-[#F2F2F2] grid grid-cols-3 gap-x-6 gap-y-0 p-4">
           {filterOption === "Efforts" && (filteredEfforts.length > 0 ? (
             filteredEfforts.map((effort) => (
               <EffortCard key={effort.id || effort.effortId} effort={effort} />
@@ -159,17 +159,10 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
             />
 
 
-            <div className="absolute top-0 left-0 h-full w-72 bg-white shadow-xl p-6 flex flex-col">
+            <div className="absolute top-0 left-0 h-full w-72 bg-[#162c64] shadow-xl p-6 flex flex-col border-r-2 border-white">
 
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-gray-800">Conversations</h2>
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  className="text-gray-600 text-2xl hover:text-gray-800 transition"
-                  aria-label="Close menu"
-                >
-                  &times;
-                </button>
+                <h2 className="text-xl font-bold text-white">Conversations</h2>
               </div>
 
 
@@ -181,11 +174,11 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
                       to="/message"
                       state={{ receiver: conv }}
                       onClick={() => setSidebarOpen(false)}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-gray-500 hover:bg-black transition"
                     >
                       <img src={`http://localhost:8080${conv.profilePictureUrl}`} className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center" />
 
-                      <span className="text-gray-800 font-medium">
+                      <span className="text-white font-medium">
                         {conv.firstName} {conv.lastName}
                       </span>
                     </Link>

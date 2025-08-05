@@ -79,8 +79,8 @@ export default function LoginSignUpPage({ setUser }) {
   };
 
   return (
-    <div className='flex flex-col items-center justify-around h-screen'>
-      <h3 className='text-9xl font-bold text-[#1F1D8F] h-1/5'>VOLUNTEER STL</h3>
+    <div className='flex flex-col items-center justify-around h-screen bg-[#162c64] text-white'>
+      <h3 className='text-9xl font-bold h-1/5'>VOLUNTEER STL</h3>
 
       {loginPage ?
         (
@@ -94,7 +94,7 @@ export default function LoginSignUpPage({ setUser }) {
                   value={formData.username}
                   onChange={handleChange}
                   required
-                  className='border border-gray-300 rounded-sm p-1 h-fit'
+                  className='border border-gray-300 rounded-sm p-1 h-fit bg-white text-black'
                 />
               </label>
               <label className='flex flex-col py-4'>
@@ -105,7 +105,7 @@ export default function LoginSignUpPage({ setUser }) {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className='border border-gray-300 rounded-sm p-1 h-fit'
+                  className='border border-gray-300 rounded-sm p-1 h-fit bg-white text-black'
                 />
               </label>
               <button type="submit" className="text-3xl py-5">Login</button>
@@ -115,7 +115,7 @@ export default function LoginSignUpPage({ setUser }) {
           </>) :
         (
           <>
-            <form className='grid grid-cols-2' onSubmit={handleRegistration}>
+            <form className='grid grid-cols-2 gap-4' onSubmit={handleRegistration}>
               <label className='flex flex-col py-4'>
                 Username:
                 <input
@@ -124,7 +124,7 @@ export default function LoginSignUpPage({ setUser }) {
                   value={formData.username}
                   onChange={handleChange}
                   required
-                  className='border border-gray-300 rounded-sm p-1 h-fit'
+                  className='border border-gray-300 rounded-sm p-1 h-fit bg-white text-black'
                 />
               </label>
               <label className='flex flex-col py-4'>
@@ -135,7 +135,7 @@ export default function LoginSignUpPage({ setUser }) {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className='border border-gray-300 rounded-sm p-1 h-fit'
+                  className='border border-gray-300 rounded-sm p-1 h-fit bg-white text-black'
                 />
               </label>
               <label className='flex flex-col py-4'>
@@ -146,7 +146,7 @@ export default function LoginSignUpPage({ setUser }) {
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  className='border border-gray-300 rounded-sm p-1 h-fit'
+                  className='border border-gray-300 rounded-sm p-1 h-fit bg-white text-black'
                 />
               </label>
               <label className='flex flex-col py-4'>
@@ -157,7 +157,7 @@ export default function LoginSignUpPage({ setUser }) {
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  className='border border-gray-300 rounded-sm p-1 h-fit'
+                  className='border border-gray-300 rounded-sm p-1 h-fit bg-white text-black'
                 />
               </label>
               <label className='flex flex-col py-4'>
@@ -168,7 +168,7 @@ export default function LoginSignUpPage({ setUser }) {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className='border border-gray-300 rounded-sm p-1 h-fit'
+                  className='border border-gray-300 rounded-sm p-1 h-fit bg-white text-black'
                 />
               </label>
               <button type="submit" className="text-3xl py-5">Sign Up</button>

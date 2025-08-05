@@ -130,29 +130,28 @@ export default function AccountPage({ user }) {
   }
 
   return (
-    <>
-
+    <div className="max-w-7xl mx-auto px-4 py-10">
       {!currUser ? (
         <div className="p-8">
           <p className="text-xl text-gray-600">Loading user profile...</p>
         </div>
       ) : (
-        <div className='flex w-full justify-between px-10 py-8 gap-10'>
+        <div className='grid grid-cols-1 md:grid-cols-[300px_1fr] gap-10'>
 
-          <div className='min-w-[280px] max-w-[300px] w-full border border-gray-300 rounded-md p-6 flex flex-col items-center'>
-            <img src={`http://localhost:8080${currUser.profilePictureUrl}`} className="h-40 w-40 object-cover rounded-full mb-4" />
+          <div className='flex flex-col bg-white rounded-2xl shadow-md p-6 text-center'>
+            <img src={`http://localhost:8080${currUser.profilePictureUrl}`} className="h-36 w-36 mx-auto object-cover rounded-full mb-4 border-4 border-white shadow" />
             <h2 className="text-2xl font-semibold">{currUser.firstName}</h2>
-            <p className="text-gray-600">@{currUser.username}</p>
+            <p className="text-gray-500">@{currUser.username}</p>
 
             {!viewingSelf ? (<>
 
-              {connectionStatus == "Connection Doesn't Exist" ? (<button onClick={handleConnectionSent} className="mt-4 p-2 border rounded-md hover:bg-gray-100 flex items-center gap-2 text-sm">
+              {connectionStatus == "Connection Doesn't Exist" ? (<button onClick={handleConnectionSent} className="px-4 py-2 rounded-md text-sm flex items-center justify-center gap-2">
                 <FaPlus /> Follow
               </button>) : (<></>)}
 
               {connectionStatus == "accepted" && <button onClick={() => nav(`/message`, { state: { receiver: currUser } })} className="mt-8 font-semibold text-lg">Message Me</button>}
 
-              {connectionStatus == "pending" && <h3 className='mt-8 font-semibold text-sm'>pending response...</h3>}
+              {connectionStatus == "pending" && <h3 className='text-sm text-gray-400 mt-4'>pending response...</h3>}
 
             </>) : (<><button
               onClick={() => {
@@ -211,20 +210,20 @@ export default function AccountPage({ user }) {
                 >
                   {["firstName", "lastName", "email", "bio"].map((field) => (
                     <div key={field}>
-                      <label className="block text-sm font-medium capitalize">{field.replace(/([A-Z])/g, ' $1')}</label>
+                      <label className="block text-sm font-medium capitalize focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition">{field.replace(/([A-Z])/g, ' $1')}</label>
                       {field === "bio" ? (
                         <textarea
                           rows={3}
                           value={editedProfile[field]}
                           onChange={(e) => setEditedProfile({ ...editedProfile, [field]: e.target.value })}
-                          className="border rounded px-2 py-1 w-full"
+                          className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
                         />
                       ) : (
                         <input
                           type="text"
                           value={editedProfile[field]}
                           onChange={(e) => setEditedProfile({ ...editedProfile, [field]: e.target.value })}
-                          className="border rounded px-2 py-1 w-full"
+                          className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
                         />
                       )}
                     </div>
@@ -239,7 +238,7 @@ export default function AccountPage({ user }) {
                         const file = e.target.files[0];
                         setEditedProfile(prev => ({ ...prev, newImageFile: file }));
                       }}
-                      className="border rounded px-2 py-1 w-full"
+                      className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
                     />
                   </div>
 
@@ -251,8 +250,8 @@ export default function AccountPage({ user }) {
                 </form>
               ) : (
                 <>
-                  <h3 className="text-3xl font-bold">Bio</h3>
-                  <p className="text-gray-700 leading-relaxed text-lg">{currUser.bio || "No bio provided."}</p>
+                  <h3 className="text-2xl font-bold mb-2">Bio</h3>
+                  <p className="text-gray-700 text-base leading-relaxed">{currUser.bio || "No bio provided."}</p>
                 </>
               )}
 
@@ -261,7 +260,7 @@ export default function AccountPage({ user }) {
 
             <section>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-3xl font-bold">Efforts {currUser.firstName} Created</h3>
+                <h3 className="text-2xl font-bold">Efforts {currUser.firstName} Created</h3>
 
                 {organizedEfforts?.length > 3 && (
                   <div className="flex gap-2">
@@ -294,6 +293,6 @@ export default function AccountPage({ user }) {
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }

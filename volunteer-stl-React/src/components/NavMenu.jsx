@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 export default function NavMenu({ user, hasNotifications, setSidebarOpen, sidebarOpen }) {
 
   return (
-    <ul className='flex'>
+    <ul className='flex text-white'>
       <Link to='notifications' className={`${hasNotifications ? 'text-red-700' : ''} p-4 text-3xl`}><IoIosNotifications /></Link>
       <Link to='add-effort' className='p-4 text-3xl'><FaPlus /></Link>
       <Link to='settings' className='p-4 text-3xl'><IoIosSettings /></Link>

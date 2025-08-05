@@ -6,9 +6,9 @@ export default function EffortCard({ effort }) {
   const start = new Date(effort.startTime);
 
   return (
-    <Link to={`/effort/${effort.effortId}`} className="flex flex-col border border-gray-500 rounded-md w-full my-10 p-2">
+    <Link to={`/effort/${effort.effortId}`} className="flex flex-col border-[#8E0020] border-2 rounded-md w-full my-10 p-2 bg-white hover:border-[#D4B82F] transition-colors">
 
-      <img src={`http://localhost:8080${effort.imageUrl}`} alt="Effort" className="w-full h-58 object-cover rounded-t-md" />
+      <img src={`http://localhost:8080${effort.imageUrl}`} alt="Effort" className="w-full h-58 object-cover rounded-md" />
 
       <div className="p-3">
         <h3 className='font-semibold text-lg truncate'>{effort.effortName}</h3>

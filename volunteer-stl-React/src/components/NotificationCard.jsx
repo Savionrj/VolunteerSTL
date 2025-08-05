@@ -33,14 +33,14 @@ export default function NotificationCard({ connectionRequest, onRespond }) {
   }
 
   return (
-    <div className="flex justify-between border-t border-gray-500 my-2 text-2xl p-8">
-      <Link to={`/account/${connectionRequest.senderUserId}`}>
+    <div className="bg-white rounded-xl shadow-md p-6 flex items-center justify-between">
+      <Link to={`/account/${connectionRequest.senderUserId}`} className="text-lg font-medium text-gray-800 hover:text-shadow-lg text-shadow-amber-200">
         <p>{connectionRequest.senderFirstName} {connectionRequest.senderLastName}</p>
       </Link>
 
-      {connectionRequest && (<div className="flex gap-8">
-        <button onClick={acceptConnection} className="px-4 py-1 rounded hover:bg-green-600">Accept</button>
-        <button onClick={declineConnection} className="px-4 py-1 rounded hover:bg-red-600">Decline</button>
+      {connectionRequest && (<div className="flex gap-3">
+        <button onClick={acceptConnection} className="px-4 py-2 rounded-md text-sm hover:bg-[#162c64] hover:text-white transition">Accept</button>
+        <button onClick={declineConnection} className="px-4 py-2 rounded-md text-sm hover:bg-red-700 hover:text-white transition">Decline</button>
       </div>)}
 
     </div>

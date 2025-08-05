@@ -196,9 +196,9 @@ export default function EffortPage({ efforts, user }) {
 
   return (
     <div>
-      <div className="flex justify-between items-center px-10 py-6 border-b border-gray-300">
+      <div className="flex justify-between items-center px-10 py-6 border-b border-gray-300 bg-[#ECECEC]">
         <h3>
-          <span className="text-3xl">{currentEffort.effortName}</span>
+          <span className="text-3xl font-semibold">{currentEffort.effortName}</span>
           <br />
           <Link to={`/account/${currentEffort.userId}`}><span className="text-2xl">By {currentEffort.organizerName}</span></Link>
         </h3>
@@ -240,9 +240,172 @@ export default function EffortPage({ efforts, user }) {
       </div>
 
       <div>
-        <div className="flex justify-between items-center p-8">
+        <div className="flex justify-between items-center p-8 pb-20">
           <img src={`http://localhost:8080${currentEffort.imageUrl}`} alt="Effort" className="w-full h-[60vh] object-cover rounded-md" />
-          <div className="flex flex-col w-full text-2xl px-10">
+
+          {editMode ? (
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+
+              try {
+                const formData = new FormData();
+                const payload = {
+                  title: editedEffort.title,
+                  description: editedEffort.description,
+                  date: formatDateToMMDDYYYY(editedEffort.date),
+                  startTime: formatTimeTo12Hour(editedEffort.startTime),
+                  endTime: formatTimeTo12Hour(editedEffort.endTime),
+                  location: editedEffort.location,
+                  tags: JSON.stringify(editedEffort.tags.split(',').map(tag => tag.trim())),
+                  maxVolunteers: parseInt(editedEffort.maxVolunteers),
+                  organizerId: user.id
+                };
+                formData.append("effort", new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+                if (editedEffort.newImageFile) {
+                  formData.append("image", editedEffort.newImageFile);
+                }
+
+                const response = await fetch(`http://localhost:8080/efforts/${currentEffort.effortId}/update-effort`, {
+                  method: 'PUT',
+                  body: formData
+                });
+
+                if (!response.ok) throw new Error('Update failed');
+                const updatedEffort = await response.json();
+                setEditMode(false);
+                window.location.reload();
+              } catch (err) {
+                console.error('Effort update failed:', err.message);
+              }
+            }}
+              className="p-8 rounded-lg space-y-6 w-full h-[60vh] px-10 mb-10 text-md">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={editedEffort.title}
+                    onChange={(e) => setEditedEffort({ ...editedEffort, title: e.target.value })}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <textarea
+                    name="description"
+                    rows="2"
+                    value={editedEffort.description}
+                    onChange={(e) => setEditedEffort({ ...editedEffort, description: e.target.value })}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={editedEffort.date}
+                    onChange={(e) => setEditedEffort({ ...editedEffort, date: e.target.value })}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+                  <input
+                    type="text"
+                    name="tags"
+                    value={editedEffort.tags}
+                    onChange={(e) => setEditedEffort({ ...editedEffort, tags: e.target.value })}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                  <input
+                    type="time"
+                    name="startTime"
+                    value={editedEffort.startTime}
+                    onChange={(e) => setEditedEffort({ ...editedEffort, startTime: e.target.value })}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                  <input
+                    type="time"
+                    name="endTime"
+                    value={editedEffort.endTime}
+                    onChange={(e) => setEditedEffort({ ...editedEffort, endTime: e.target.value })}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
+                    required
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={editedEffort.location}
+                    onChange={(e) => setEditedEffort({ ...editedEffort, location: e.target.value })}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      setEditedEffort(prev => ({ ...prev, newImageFile: file }));
+                    }}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Max Volunteers</label>
+                  <input
+                    type="number"
+                    name="maxVolunteers"
+                    value={editedEffort.maxVolunteers}
+                    onChange={(e) => setEditedEffort({ ...editedEffort, maxVolunteers: e.target.value })}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-6 text-center">
+                <button
+                  type="submit"
+                  className="bg-teal-600 text-white px-6 py-3 rounded-md hover:bg-teal-700"
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditMode(false)}
+                  className="ml-4 underline text-gray-600"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (<div className="flex flex-col w-full text-2xl px-10">
             <h4 className="text-3xl">Details</h4>
             <p>Date: {formatDate(currentEffort.startTime)}</p>
             <p>Starting Time: {formatTime(currentEffort.startTime)} </p>
@@ -258,180 +421,13 @@ export default function EffortPage({ efforts, user }) {
               )}
 
             <p>Volunteer Count: {userEffortCount} / {currentEffort.maxVolunteers} </p>
-          </div>
+          </div>)}
         </div>
 
-        <div className="p-8 text-2xl">
+        {!editMode && (<div className="p-8 text-2xl">
           <h4>Description</h4>
           <p>{currentEffort.description}</p>
-        </div>
-
-        {editMode && (
-          <form onSubmit={async (e) => {
-            e.preventDefault();
-
-            try {
-              const formData = new FormData();
-              const payload = {
-                title: editedEffort.title,
-                description: editedEffort.description,
-                date: formatDateToMMDDYYYY(editedEffort.date),
-                startTime: formatTimeTo12Hour(editedEffort.startTime),
-                endTime: formatTimeTo12Hour(editedEffort.endTime),
-                location: editedEffort.location,
-                tags: JSON.stringify(editedEffort.tags.split(',').map(tag => tag.trim())),
-                maxVolunteers: parseInt(editedEffort.maxVolunteers),
-                organizerId: user.id
-              };
-              formData.append("effort", new Blob([JSON.stringify(payload)], { type: 'application/json' }));
-              if (editedEffort.newImageFile) {
-                formData.append("image", editedEffort.newImageFile);
-              }
-
-              const response = await fetch(`http://localhost:8080/efforts/${currentEffort.effortId}/update-effort`, {
-                method: 'PUT',
-                body: formData
-              });
-
-              if (!response.ok) throw new Error('Update failed');
-              const updatedEffort = await response.json();
-              setEditMode(false);
-              window.location.reload();
-            } catch (err) {
-              console.error('Effort update failed:', err.message);
-            }
-          }}
-            className="p-8 bg-white shadow-lg rounded-lg space-y-6">
-
-            <h2 className="text-2xl font-bold text-gray-800 border-b pb-4">Edit Effort</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={editedEffort.title}
-                  onChange={(e) => setEditedEffort({ ...editedEffort, title: e.target.value })}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  name="description"
-                  rows="2"
-                  value={editedEffort.description}
-                  onChange={(e) => setEditedEffort({ ...editedEffort, description: e.target.value })}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                <input
-                  type="date"
-                  name="date"
-                  value={editedEffort.date}
-                  onChange={(e) => setEditedEffort({ ...editedEffort, date: e.target.value })}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-                <input
-                  type="text"
-                  name="tags"
-                  value={editedEffort.tags}
-                  onChange={(e) => setEditedEffort({ ...editedEffort, tags: e.target.value })}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
-                <input
-                  type="time"
-                  name="startTime"
-                  value={editedEffort.startTime}
-                  onChange={(e) => setEditedEffort({ ...editedEffort, startTime: e.target.value })}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
-                <input
-                  type="time"
-                  name="endTime"
-                  value={editedEffort.endTime}
-                  onChange={(e) => setEditedEffort({ ...editedEffort, endTime: e.target.value })}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
-                  required
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                <input
-                  type="text"
-                  name="location"
-                  value={editedEffort.location}
-                  onChange={(e) => setEditedEffort({ ...editedEffort, location: e.target.value })}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    setEditedEffort(prev => ({ ...prev, newImageFile: file }));
-                  }}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Max Volunteers</label>
-                <input
-                  type="number"
-                  name="maxVolunteers"
-                  value={editedEffort.maxVolunteers}
-                  onChange={(e) => setEditedEffort({ ...editedEffort, maxVolunteers: e.target.value })}
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
-                />
-              </div>
-            </div>
-
-            <div className="pt-6 text-center">
-              <button
-                type="submit"
-                className="bg-teal-600 text-white px-6 py-3 rounded-md hover:bg-teal-700"
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditMode(false)}
-                className="ml-4 underline text-gray-600"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        )}
-
+        </div>)}
 
 
         <div className="p-8 text-xl border-t border-gray-300">

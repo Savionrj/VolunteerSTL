@@ -106,7 +106,7 @@ export default function AddEffort({ user, fetchEfforts }) {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
             required
           />
         </div>
@@ -118,7 +118,7 @@ export default function AddEffort({ user, fetchEfforts }) {
             rows="2"
             value={formData.description}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
             required
           />
         </div>
@@ -130,7 +130,7 @@ export default function AddEffort({ user, fetchEfforts }) {
             name="date"
             value={formData.date}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
             required
           />
         </div>
@@ -143,7 +143,7 @@ export default function AddEffort({ user, fetchEfforts }) {
             value={formData.tags}
             onChange={handleChange}
             placeholder="Comma-separated (e.g. food,school,trees)"
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
           />
         </div>
 
@@ -154,7 +154,7 @@ export default function AddEffort({ user, fetchEfforts }) {
             name="startTime"
             value={formData.startTime}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
             required
           />
         </div>
@@ -165,7 +165,7 @@ export default function AddEffort({ user, fetchEfforts }) {
             name="endTime"
             value={formData.endTime}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
             required
           />
         </div>
@@ -178,7 +178,7 @@ export default function AddEffort({ user, fetchEfforts }) {
             value={formData.location}
             onChange={handleChange}
             placeholder="123 Main St, City, State zipcode"
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
             required
           />
         </div>
@@ -189,7 +189,7 @@ export default function AddEffort({ user, fetchEfforts }) {
             type="file"
             accept="image/*"
 
-            className='w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500'
+            className='w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition'
             onChange={handleImageChange}
           />
         </div>
@@ -200,7 +200,7 @@ export default function AddEffort({ user, fetchEfforts }) {
             name="maxVolunteers"
             value={formData.maxVolunteers}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4B82F] hover:border-[#D4B82F] transition"
           />
         </div>
       </div>

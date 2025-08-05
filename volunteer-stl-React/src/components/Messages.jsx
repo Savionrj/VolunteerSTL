@@ -53,18 +53,19 @@ export default function Messages({ user }) {
   }
 
   return (
-    <div className="bordery rounded-lg shadow-lg flex flex-col h-[85vh]">
+    <div className="mx-2 bg-white rounded-xl shadow-md flex flex-col h-[85vh] overflow-hidden">
+
       <div className="bg-gray-100 px-6 py-4 border-b flex items-center">
-        <Link to={`/account/${receiver.id}`} className="text-2xl font-semibold">Message {receiver.firstName} {receiver.lastName}</Link>
+        <Link to={`/account/${receiver.id}`} className="text-xl font-semibold text-gray-800">Message {receiver.firstName} {receiver.lastName}</Link>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-white">
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50">
         {messages.map((msg, idx) => (
           <div
             key={idx}
             className={`flex ${msg.senderId === user.id ? "justify-end" : "justify-start"}`}
           >
-            <div className={`px-4 py-2 rounded-lg max-w-xs text-white ${msg.senderId === user.id ? "bg-blue-500" : "bg-gray-500"}`}>
+            <div className={`px-4 py-2 rounded-lg max-w-xs text-white ${msg.senderId === user.id ? "bg-[#2d55bb]" : "bg-red-700"}`}>
               {msg.content}
             </div>
           </div>
