@@ -10,4 +10,6 @@ import java.util.List;
 public interface EffortRepository extends JpaRepository<Effort, Integer> {
     int countByOrganizer(User user);
     List<Effort> findAllByOrganizer(User organizer);
+
+    List<Effort> findAllByOrderByStartTimeAsc();
 }

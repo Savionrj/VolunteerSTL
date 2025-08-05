@@ -156,7 +156,7 @@ export default function AccountPage({ user }) {
 
             </>) : (<><button
               onClick={() => {
-                setEditMode(true);
+                setEditMode(!editMode);
                 setEditedProfile({
                   firstName: currUser.firstName,
                   lastName: currUser.lastName,
@@ -205,7 +205,8 @@ export default function AccountPage({ user }) {
                     } catch (err) {
                       console.error('Profile update failed:', err.message);
                     }
-                  }}
+                  }
+                  }
                   className="space-y-4"
                 >
                   {["firstName", "lastName", "email", "bio"].map((field) => (

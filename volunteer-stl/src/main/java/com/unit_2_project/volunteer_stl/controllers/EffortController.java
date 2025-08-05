@@ -6,6 +6,7 @@ import com.unit_2_project.volunteer_stl.models.Tag;
 import com.unit_2_project.volunteer_stl.models.User;
 import com.unit_2_project.volunteer_stl.models.dtos.effortDTOs.*;
 import com.unit_2_project.volunteer_stl.models.Effort;
+import com.unit_2_project.volunteer_stl.models.dtos.userDTOs.UserUpdateProfileDTO;
 import com.unit_2_project.volunteer_stl.repositories.EffortRepository;
 import com.unit_2_project.volunteer_stl.repositories.UserRepository;
 import com.unit_2_project.volunteer_stl.repositories.TagRepository;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/efforts")
 @RequiredArgsConstructor
@@ -50,9 +51,6 @@ public class EffortController {
                                                @RequestParam("maxVolunteers") int maxVolunteers,
                                                @RequestParam("donationsNeeded") boolean donationsNeeded,
                                                @RequestPart(value = "image", required = false) MultipartFile imageFile) {
-
-        System.out.println(title + '\n' + description + '\n' + date + '\n' + startTime + '\n' + endTime +
-                '\n' + location + '\n' + tagsJson + '\n' + maxVolunteers + '\n' + donationsNeeded);
 
         try{
             User organizer = userRepository.findById(organizerId)
@@ -170,7 +168,7 @@ public class EffortController {
 
     @GetMapping
     public List<EffortRetrievalDTO> getAllEfforts(){
-        List<Effort> efforts = effortRepository.findAll();
+        List<Effort> efforts = effortRepository.findAllByOrderByStartTimeAsc();
         List<EffortRetrievalDTO> effortDTOs = new ArrayList<>();
 
         for(Effort effort: efforts){
@@ -202,6 +200,116 @@ public class EffortController {
         }
 
         return effortDTOs;
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173")
+    @PutMapping(value = "/{effortId}/update-effort", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateEffort(@PathVariable int effortId,
+                                               @RequestPart("effort") EffortUpdateDTO dto,
+                                               @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+
+
+        try{
+            User organizer = userRepository.findById(dto.getOrganizerId())
+                    .orElseThrow(() -> new RuntimeException("Organizer not found"));
+            Effort existingEffort = effortRepository.findById(effortId)
+                    .orElseThrow(()-> new RuntimeException("Effort not found"));
+
+            existingEffort.setTitle(dto.getTitle());
+            existingEffort.setDescription(dto.getDescription());
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+
+            LocalDate parsedDate = LocalDate.parse(dto.getDate(), dateFormatter);
+            LocalTime start = LocalTime.parse(dto.getStartTime(), timeFormatter);
+            LocalTime end = LocalTime.parse(dto.getEndTime(), timeFormatter);
+
+            existingEffort.setStartTime(LocalDateTime.of(parsedDate, start));
+            existingEffort.setEndTime(LocalDateTime.of(parsedDate, end));
+
+
+            String[] parts = dto.getLocation().split(",");
+            if (parts.length < 3) {
+                return ResponseEntity.badRequest().body(null);
+            }
+            String street = parts[0].trim();
+            String city = parts[1].trim();
+            String stateZip = parts[2].trim();
+            String[] stateZipParts = stateZip.split(" ");
+            String state = stateZipParts[0];
+            String zip = stateZipParts[1];
+
+            existingEffort.setAddress(street);
+            existingEffort.setCity(city);
+            existingEffort.setState(state);
+            existingEffort.setZipCode(zip);
+
+
+            ObjectMapper mapper = new ObjectMapper();
+            List<String> tagList = mapper.readValue(dto.getTags(), new TypeReference<List<String>>() {});
+            List<Tag> tags = tagList.stream()
+                    .map(String::trim)
+                    .filter(name -> !name.isEmpty())
+                    .map(name -> tagRepository.findByNameIgnoreCase(name.trim())
+                            .orElseGet(() -> tagRepository.save(new Tag(name.trim()))))
+                    .toList();
+
+            existingEffort.getTags().clear();
+            existingEffort.getTags().addAll(tags);
+
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+                Path uploadPath = Paths.get("uploads/images");
+                Files.createDirectories(uploadPath);
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                existingEffort.setImageUrl("/uploads/images/" + fileName);
+            }else {
+                existingEffort.setImageUrl("/images/stLouis-default.jpg");
+            }
+
+            existingEffort.setMaxVolunteers(dto.getMaxVolunteers());
+            existingEffort.setDonationsNeeded(false);
+            existingEffort.setEffortCompleted(false);
+            existingEffort.setCreatedAt(existingEffort.getCreatedAt());
+
+            existingEffort.setOrganizer(organizer);
+
+            effortRepository.save(existingEffort);
+
+            EffortRetrievalDTO effortDTO = new EffortRetrievalDTO();
+
+            effortDTO.setEffortId(existingEffort.getId());
+            effortDTO.setEffortName(existingEffort.getTitle());
+            effortDTO.setUserId(existingEffort.getOrganizer().getId());
+
+            effortDTO.setStartTime(existingEffort.getStartTime());
+            effortDTO.setEndTime(existingEffort.getEndTime());
+
+            effortDTO.setAddress(existingEffort.getAddress());
+            effortDTO.setCity(existingEffort.getCity());
+            effortDTO.setState(existingEffort.getState());
+            effortDTO.setZipCode(existingEffort.getZipCode());
+
+            effortDTO.setTags(existingEffort.getTags());
+
+            effortDTO.setDescription(existingEffort.getDescription());
+
+            effortDTO.setImageUrl(existingEffort.getImageUrl());
+            effortDTO.setOrganizerName(existingEffort.getOrganizer().getFirstName());
+
+            effortDTO.setMaxVolunteers(existingEffort.getMaxVolunteers());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(effortDTO);
+
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
+        }
     }
 
     @DeleteMapping("/{id}")
