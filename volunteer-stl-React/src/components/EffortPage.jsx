@@ -1,6 +1,6 @@
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react";
-import volunteerImage from '../images/volunteer.jpg';
+import { MdDelete } from "react-icons/md";
 
 export default function EffortPage({ efforts, user }) {
 
@@ -11,6 +11,8 @@ export default function EffortPage({ efforts, user }) {
   const [newComment, setNewComment] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [editedEffort, setEditedEffort] = useState({});
+
+  const nav = useNavigate();
 
   const currentEffort = efforts.find(
     (effort) => effort.effortId.toString() === effortId
@@ -134,10 +136,10 @@ export default function EffortPage({ efforts, user }) {
           fetchCount();
           setRegisterState();
         } else {
-          console.error("Unregistration failed.");
+          console.error("Deregistration failed.");
         }
       } catch (error) {
-        console.error("Error during unregistration:", error);
+        console.error("Error during deregistration:", error);
       }
     }
   };
@@ -177,6 +179,21 @@ export default function EffortPage({ efforts, user }) {
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/efforts/delete/${currentEffort.effortId}`,
+        { method: 'DELETE' }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      nav("/");
+      window.location.reload();
+    } catch (err) {
+      console.error('Failed to delete effort:', err.message);
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center px-10 py-6 border-b border-gray-300">
@@ -185,8 +202,11 @@ export default function EffortPage({ efforts, user }) {
           <br />
           <Link to={`/account/${currentEffort.userId}`}><span className="text-2xl">By {currentEffort.organizerName}</span></Link>
         </h3>
-        {isOrganizer ? (<>
-          
+        {isOrganizer ? (<div className="flex gap-6">
+          <button className="text-2xl hover:text-red-700"
+            onClick={handleDelete}
+          ><MdDelete />
+          </button>
           <button
             onClick={() => {
               setEditMode(!editMode)
@@ -207,7 +227,7 @@ export default function EffortPage({ efforts, user }) {
           >
             Edit Effort
           </button>
-        </>) : (
+        </div>) : (
           <button
             type="button"
             onClick={(e) => handleRegister(e)}

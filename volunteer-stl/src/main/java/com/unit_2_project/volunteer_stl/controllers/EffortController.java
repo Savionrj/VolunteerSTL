@@ -312,7 +312,7 @@ public class EffortController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteEffortById(@PathVariable int id){
         if (!effortRepository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Effort not found");
