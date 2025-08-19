@@ -223,7 +223,7 @@ export default function EffortPage({ efforts, user }) {
                 maxVolunteers: currentEffort?.maxVolunteers || 1
               })
             }}
-            className={`${editMode ? 'bg-gray-500 text-white' : 'bg-gray-100'} border border-gray-300 rounded-md p-2 text-2xl`}
+            className={`${editMode ? 'bg-blue-950 text-white' : 'bg-blue-900 text-white'} border border-gray-300 rounded-md p-2 text-2xl`}
           >
             Edit Effort
           </button>
@@ -231,7 +231,7 @@ export default function EffortPage({ efforts, user }) {
           <button
             type="button"
             onClick={(e) => handleRegister(e)}
-            className="border border-gray-300 rounded-md p-2 text-2xl"
+              className=" bg-blue-900 text-white border border-gray-300 rounded-md p-2 text-2xl"
             disabled={userEffortCount >= currentEffort.maxVolunteers && !registered}
           >
             {registered ? "Unregister" : "Register"}
@@ -392,14 +392,14 @@ export default function EffortPage({ efforts, user }) {
               <div className="pt-6 text-center">
                 <button
                   type="submit"
-                  className="bg-teal-600 text-white px-6 py-3 rounded-md hover:bg-teal-700"
+                  className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-700"
                 >
                   Save Changes
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditMode(false)}
-                  className="ml-4 underline text-gray-600"
+                  className="ml-4 text-gray-600"
                 >
                   Cancel
                 </button>
@@ -455,7 +455,7 @@ export default function EffortPage({ efforts, user }) {
               />
               <button
                 type="submit"
-                className="px-4 py-2 rounded bg-gray-800 text-white disabled:bg-gray-300"
+                className="px-4 py-2 rounded bg-blue-800 text-white disabled:bg-gray-500"
                 disabled={!newComment.trim()}
               >
                 Post

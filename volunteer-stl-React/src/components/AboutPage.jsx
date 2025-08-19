@@ -41,11 +41,15 @@ export default function AboutPage() {
                 </tr>
                 <tr>
                   <td className="px-6 py-4 font-medium">My Efforts</td>
-                  <td className="px-6 py-4">View all efforts you've created.</td>
+                  <td className="px-6 py-4">See efforts you've registered for and manage your involvement.</td>
                 </tr>
                 <tr>
-                  <td className="px-6 py-4 font-medium">Upcoming Efforts</td>
-                  <td className="px-6 py-4">See efforts you've registered for and manage your involvement.</td>
+                  <td className="px-6 py-4 font-medium">Messaging System</td>
+                  <td className="px-6 py-4">Message other users you've made connections with.</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 font-medium">Effort Commenting System</td>
+                  <td className="px-6 py-4">Post comments underneath efforts.</td>
                 </tr>
               </tbody>
             </table>

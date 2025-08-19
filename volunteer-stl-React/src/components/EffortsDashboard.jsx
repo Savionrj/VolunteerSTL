@@ -151,13 +151,7 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
       </div>
       {
         sidebarOpen && (
-          <div className="fixed inset-0 z-50">
-
-            <div
-              className="absolute inset-0"
-              onClick={() => setSidebarOpen(false)}
-            />
-
+          <div className="fixed inset-0 z-50" onClick={() => setSidebarOpen(false)}>
 
             <div className="absolute top-0 left-0 h-full w-72 bg-[#162c64] shadow-xl p-6 flex flex-col border-r-2 border-white">
 

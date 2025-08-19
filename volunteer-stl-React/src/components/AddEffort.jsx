@@ -92,7 +92,7 @@ export default function AddEffort({ user, fetchEfforts }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-8 bg-white shadow-lg rounded-lg space-y-6">
+    <form onSubmit={handleSubmit} className="px-8 pt-8 h-100 bg-white space-y-6">
 
       <h2 className="text-2xl font-bold text-gray-800 border-b pb-4">Add a New Effort</h2>
 
@@ -207,7 +207,7 @@ export default function AddEffort({ user, fetchEfforts }) {
       <div className="pt-6 text-center">
         <button
           type="submit"
-          className="bg-teal-600 text-white px-6 py-3 rounded-md hover:bg-teal-700 transition"
+          className="bg-blue-900 text-white text-bold px-6 py-3 rounded-md hover:bg-blue-700 transition"
         >
           Add Effort
         </button>

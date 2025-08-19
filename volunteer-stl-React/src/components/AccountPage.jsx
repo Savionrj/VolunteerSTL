@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import volunteerImage from '../images/volunteer.jpg';
 import { FaPlus } from "react-icons/fa";
 import EffortCard from './EffortCard';
 import Button from './Button';
@@ -264,7 +263,7 @@ export default function AccountPage({ user }) {
                     <button type="submit" className="bg-blue-900 text-white px-4 py-2 rounded">Save</button>
 
 
-                    <button type="button" onClick={() => setEditMode(false)} className="text-gray-600 underline">Cancel</button>
+                    <button type="button" onClick={() => setEditMode(false)} className="text-gray-600">Cancel</button>
 
 
                   </div>

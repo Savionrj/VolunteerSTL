@@ -15,7 +15,7 @@ export default function Settings({ user, setUser }) {
 
         <button
           onClick={handleSignout}
-          className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition"
+          className="w-full bg-red-700 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition"
         >
           Sign Out
         </button>
