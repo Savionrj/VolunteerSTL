@@ -278,7 +278,7 @@ export default function AccountPage({ user }) {
 
             </section>
 
-            <section>
+              <section>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold">Efforts {currUser.firstName} Created</h3>
 

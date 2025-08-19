@@ -168,7 +168,7 @@ public class EffortController {
 
     @GetMapping
     public List<EffortRetrievalDTO> getAllEfforts(){
-        List<Effort> efforts = effortRepository.findAllByOrderByStartTimeAsc();
+        List<Effort> efforts = effortRepository.findAllByEndTimeAfterOrderByStartTimeAsc(LocalDateTime.now());
         List<EffortRetrievalDTO> effortDTOs = new ArrayList<>();
 
         for(Effort effort: efforts){
