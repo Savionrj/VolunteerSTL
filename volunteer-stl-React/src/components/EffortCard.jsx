@@ -1,11 +1,9 @@
-import volunteerImage from '../images/volunteer.jpg';
 import { Link } from 'react-router-dom';
 
 export default function EffortCard({ effort }) {
 
   const eventTime = new Date(effort.endTime);
   const hasPassed = eventTime.getTime() <= Date.now();
-  console.log(hasPassed ? "past" : "upcoming");
 
   return (
     <Link to={`/effort/${effort.effortId}`} className="flex flex-col border-[#8E0020] border-2 rounded-md w-full h-90 my-10 p-2 bg-white hover:border-[#D4B82F] transition-colors">

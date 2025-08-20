@@ -1,7 +1,12 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Settings({ user, setUser }) {
+
+  const nav = useNavigate();
 
   const handleSignout = () => {
     setUser(null);
+    nav('/');
   };
 
   return (

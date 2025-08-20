@@ -100,12 +100,12 @@ public class UserEffortController {
     }
 
     @GetMapping("/get-organized-efforts")
-    public List<EffortRetrievalDTO> getCompletedEffortsByUser(@RequestParam int userId){
+    public List<EffortRetrievalDTO> getOrganizedEffortsByUser(@RequestParam int userId){
 
         Optional<User> optionalUser = userRepository.findById(userId);
         User organizer = optionalUser.get();
 
-        List<Effort> efforts = effortRepository.findAllByOrganizer(organizer);
+        List<Effort> efforts = effortRepository.findAllByOrganizerOrderByEndTimeDesc(organizer);
         List<EffortRetrievalDTO> effortDTOs = new ArrayList<>();
 
         for(Effort effort: efforts){
