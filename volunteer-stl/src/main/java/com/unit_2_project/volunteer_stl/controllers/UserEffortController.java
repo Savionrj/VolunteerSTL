@@ -76,18 +76,36 @@ public class UserEffortController {
 
     @GetMapping("/count-completed-efforts")
     public int getCountCompletedEffortsByUser(@RequestParam int userId){
-        userEffortRepository.findAllByUserId(userId);
+        List<UserEffort> allUserEffortsByUser = userEffortRepository.findAllByUserId(userId);
+        int count = 0;
+        //List<Effort> allEffortsUserRegistered = new ArrayList<>();
 
-        return userEffortRepository.countByStatus("completed");
+        for(UserEffort userEffort : allUserEffortsByUser){
+
+            Optional <Effort> optionalEffort = effortRepository.findById(userEffort.getEffort().getId());
+            if(optionalEffort.isPresent()){
+                //allEffortsUserRegistered.add(optionalEffort.get());
+                Effort effort = optionalEffort.get();
+                if(effort.getEndTime().isBefore(LocalDateTime.now())){
+                    count++;
+                }
+            }
+        }
+
+        return count;
+
+
+
+        //add count of organized efforts
     }
 
     @GetMapping("/get-organized-efforts")
-    public List<EffortRetrievalDTO> getCompletedEffortsByUser(@RequestParam int userId){
+    public List<EffortRetrievalDTO> getOrganizedEffortsByUser(@RequestParam int userId){
 
         Optional<User> optionalUser = userRepository.findById(userId);
         User organizer = optionalUser.get();
 
-        List<Effort> efforts = effortRepository.findAllByOrganizer(organizer);
+        List<Effort> efforts = effortRepository.findAllByOrganizerOrderByEndTimeDesc(organizer);
         List<EffortRetrievalDTO> effortDTOs = new ArrayList<>();
 
         for(Effort effort: efforts){

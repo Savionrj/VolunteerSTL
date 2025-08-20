@@ -86,7 +86,7 @@ export default function EffortsDashboard({ allEfforts, user, sidebarOpen, conver
       <div>
         < EffortFilterSection setFilterOption={setFilterOption} search={search} setSearch={setSearch} setSortType={setSortType} />
 
-        <div className="bg-[#F2F2F2] grid gap-x-6 gap-y-0 p-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="bg-[#F2F2F2] grid gap-x-6 gap-y-0 p-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 h-dvh">
           {filterOption === "Efforts" && (filteredEfforts.length > 0 ? (
             filteredEfforts.map((effort) => (
               <EffortCard key={effort.id || effort.effortId} effort={effort} />

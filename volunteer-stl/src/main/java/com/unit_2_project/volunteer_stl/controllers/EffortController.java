@@ -129,8 +129,8 @@ public class EffortController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getEffortById(@PathVariable int id) {
+    @GetMapping("/by-id")
+    public ResponseEntity<?> getEffortById(@RequestParam int id) {
         Effort effort = effortRepository.findById(id)
                 .orElse(null);
 
@@ -168,7 +168,7 @@ public class EffortController {
 
     @GetMapping
     public List<EffortRetrievalDTO> getAllEfforts(){
-        List<Effort> efforts = effortRepository.findAllByOrderByStartTimeAsc();
+        List<Effort> efforts = effortRepository.findAllByEndTimeAfterOrderByStartTimeAsc(LocalDateTime.now());
         List<EffortRetrievalDTO> effortDTOs = new ArrayList<>();
 
         for(Effort effort: efforts){

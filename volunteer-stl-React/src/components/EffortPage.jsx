@@ -11,13 +11,28 @@ export default function EffortPage({ efforts, user }) {
   const [newComment, setNewComment] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [editedEffort, setEditedEffort] = useState({});
+  const [currentEffort, setCurrentEffort] = useState(null);
 
   const nav = useNavigate();
 
-  const currentEffort = efforts.find(
-    (effort) => effort.effortId.toString() === effortId
-  );
+  const fetchCurrentEffort = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/efforts/by-id?id=${effortId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentEffort(data);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    }
+    catch (err) {
+      console.error('Failed to fetch current effort:', err.message);
+    }
+  }
 
+  useEffect(() => {
+    fetchCurrentEffort();
+  }, [effortId]);
 
   const userEffort = currentEffort && user
     ? { userId: user.id, effortId: currentEffort.effortId }
@@ -194,6 +209,9 @@ export default function EffortPage({ efforts, user }) {
     }
   };
 
+  const eventTime = new Date(currentEffort.endTime);
+  const hasPassed = eventTime.getTime() <= Date.now();
+
   return (
     <div>
       <div className="flex justify-between items-center px-10 py-6 border-b border-gray-300 bg-[#ECECEC]">
@@ -202,7 +220,7 @@ export default function EffortPage({ efforts, user }) {
           <br />
           <Link to={`/account/${currentEffort.userId}`}><span className="text-2xl">By {currentEffort.organizerName}</span></Link>
         </h3>
-        {isOrganizer ? (<div className="flex gap-6">
+        {hasPassed ? (<div className="text-2xl text-[#162c64]">Effort Completed</div>) : (<>{isOrganizer ? (<div className="flex gap-6">
           <button className="text-2xl hover:text-red-700"
             onClick={handleDelete}
           ><MdDelete />
@@ -231,17 +249,18 @@ export default function EffortPage({ efforts, user }) {
           <button
             type="button"
             onClick={(e) => handleRegister(e)}
-              className=" bg-blue-900 text-white border border-gray-300 rounded-md p-2 text-2xl"
+            className=" bg-blue-900 text-white border border-gray-300 rounded-md p-2 text-2xl"
             disabled={userEffortCount >= currentEffort.maxVolunteers && !registered}
           >
             {registered ? "Unregister" : "Register"}
           </button>
-        )}
+        )}</>)}
+
       </div>
 
       <div>
         <div className="flex flex-col justify-between items-center p-8 pb-20 sm:flex-col md:flex-col lg:flex-row">
-          <img src={`http://localhost:8080${currentEffort.imageUrl}`} alt="Effort" className="w-full h-[60vh] object-cover rounded-md" />
+          <img src={`http://localhost:8080${currentEffort.imageUrl}`} alt="Effort" className={`w-full h-[60vh] object-cover rounded-md ${hasPassed && 'grayscale-80'}`} />
 
           {editMode ? (
             <form onSubmit={async (e) => {
