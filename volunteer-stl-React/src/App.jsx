@@ -26,36 +26,24 @@ function App() {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
-  }, [user]);
 
-
-  useEffect(() => {
-    if (!user) return;
-    const refreshUser = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/users/${user.id}`)
-        if (response.ok) {
-          const userDTO = await response.json();
-          setUser(userDTO);
-        } else if (response.status === 401) {
-          console.error("Invalid password.");
-        } else if (response.status === 404) {
-          console.error("User not found.");
-        } else {
-          console.error("Login failed");
-        }
-      } catch (error) {
-        console.error("Error signing user in:", error);
+  const refreshUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/users/${user.id}`)
+      if (response.ok) {
+        const userDTO = await response.json();
+        setUser(userDTO);
+      } else if (response.status === 401) {
+        console.error("Invalid password.");
+      } else if (response.status === 404) {
+        console.error("User not found.");
+      } else {
+        console.error("Login failed");
       }
+    } catch (error) {
+      console.error("Error signing user in:", error);
     }
-    refreshUser();
-  }, [])
+  }
 
   const fetchEfforts = async () => {
     try {
@@ -73,10 +61,6 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    if (!user) return;
-    fetchEfforts();
-  }, []);
 
   const getPendingConnections = async () => {
     if (!user) return;
@@ -93,28 +77,40 @@ function App() {
     }
   }
 
+  const fetchConversations = async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/messages/conversations?userId=${user.id}`);
+      const data = await res.json();
+      setConversations(data);
+    } catch (err) {
+      console.error("Failed to fetch conversations:", err.message);
+    }
+  };
+
+
   useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
     getPendingConnections();
-  }, [user]);
+    if (!user) return;
+    fetchConversations();
+  }, [user])
+
+  useEffect(() => {
+    if (!user) return;
+    refreshUser();
+    fetchEfforts();
+  }, [])
 
   useEffect(() => {
     setHasNotifications(!!pendingConnections.length);
   }, [pendingConnections]);
 
-  useEffect(() => {
-    if (!user) return;
-    const fetchConversations = async () => {
-      try {
-        const res = await fetch(`http://localhost:8080/messages/conversations?userId=${user.id}`);
-        const data = await res.json();
-        setConversations(data);
-      } catch (err) {
-        console.error("Failed to fetch conversations:", err.message);
-      }
-    };
 
-    fetchConversations();
-  }, [user]);
+
   return (
     <>
       <Router>
