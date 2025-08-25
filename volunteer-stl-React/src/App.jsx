@@ -26,36 +26,24 @@ function App() {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
-  }, [user]);
 
-
-  useEffect(() => {
-    if (!user) return;
-    const refreshUser = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/users/${user.id}`)
-        if (response.ok) {
-          const userDTO = await response.json();
-          setUser(userDTO);
-        } else if (response.status === 401) {
-          console.error("Invalid password.");
-        } else if (response.status === 404) {
-          console.error("User not found.");
-        } else {
-          console.error("Login failed");
-        }
-      } catch (error) {
-        console.error("Error signing user in:", error);
+  const refreshUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/users/${user.id}`)
+      if (response.ok) {
+        const userDTO = await response.json();
+        setUser(userDTO);
+      } else if (response.status === 401) {
+        console.error("Invalid password.");
+      } else if (response.status === 404) {
+        console.error("User not found.");
+      } else {
+        console.error("Login failed");
       }
+    } catch (error) {
+      console.error("Error signing user in:", error);
     }
-    refreshUser();
-  }, [])
+  }
 
   const fetchEfforts = async () => {
     try {
@@ -68,15 +56,9 @@ function App() {
     } catch (err) {
       console.error('Failed to fetch efforts:', err.message);
       setError(err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (!user) return;
-    fetchEfforts();
-  }, []);
 
   const getPendingConnections = async () => {
     if (!user) return;
@@ -93,42 +75,63 @@ function App() {
     }
   }
 
+  const fetchConversations = async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/messages/conversations?userId=${user.id}`);
+      const data = await res.json();
+      setConversations(data);
+    } catch (err) {
+      console.error("Failed to fetch conversations:", err.message);
+    }
+  };
+
+
   useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
     getPendingConnections();
-  }, [user]);
+    if (!user) return;
+    fetchConversations();
+    fetchEfforts();
+
+    setTimeout(() => setLoading(false), 300);
+  }, [user])
+
+
+  useEffect(() => {
+    if (!user) return;
+    refreshUser();
+
+  }, [])
 
   useEffect(() => {
     setHasNotifications(!!pendingConnections.length);
   }, [pendingConnections]);
 
-  useEffect(() => {
-    if (!user) return;
-    const fetchConversations = async () => {
-      try {
-        const res = await fetch(`http://localhost:8080/messages/conversations?userId=${user.id}`);
-        const data = await res.json();
-        setConversations(data);
-      } catch (err) {
-        console.error("Failed to fetch conversations:", err.message);
-      }
-    };
 
-    fetchConversations();
-  }, [user]);
+
   return (
     <>
       <Router>
         {!user ?
           (<LoginSignUpPage setUser={setUser} />) : (<><Header user={user} hasNotifications={hasNotifications} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
             <Routes>
-              <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} sidebarOpen={sidebarOpen} conversations={conversations} setSidebarOpen={setSidebarOpen} />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
-              <Route path="/account/:userId" element={<AccountPage user={user} />} />
-              <Route path="/add-effort" element={<AddEffort user={user} fetchEfforts={fetchEfforts} />} />
-              <Route path="/settings" element={<Settings user={user} setUser={setUser} />} />
-              <Route path="/notifications" element={<Notifications user={user} pendingConnections={pendingConnections} getPendingConnections={getPendingConnections} />} />
-              <Route path="/message" element={<Messages user={user} />} />
+
+              {loading ? <Route path="*" element={<div className="min-h-[80vh] flex items-center justify-center bg-gray-50 px-4"><p className="text-gray-600">Loading...</p></div>} /> : (<>
+
+                <Route path="/" element={<EffortsDashboard allEfforts={allEfforts} user={user} sidebarOpen={sidebarOpen} conversations={conversations} setSidebarOpen={setSidebarOpen} />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/effort/:effortId" element={<EffortPage efforts={allEfforts} user={user} />} />
+                <Route path="/account/:userId" element={<AccountPage user={user} />} />
+                <Route path="/add-effort" element={<AddEffort user={user} fetchEfforts={fetchEfforts} />} />
+                <Route path="/settings" element={<Settings user={user} setUser={setUser} />} />
+                <Route path="/notifications" element={<Notifications user={user} pendingConnections={pendingConnections} getPendingConnections={getPendingConnections} />} />
+                <Route path="/message" element={<Messages user={user} />} />
+
+              </>)}
             </Routes></>)}
       </Router>
     </>
